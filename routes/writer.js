@@ -31,14 +31,6 @@ router.get('/download/:file', function(req, res, next){
        }else{
          res.status(400).redirect('/submit');
        }
-        // var filename = path.basename(file);
-        // var mimetype = mime.lookup(file);
-        //
-        // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-        // res.setHeader('Content-type', mimetype);
-
-        // var filestream = fs.createReadStream(filename);
-        // filestream.pipe(res);
       });
     }else{
       res.status(400).redirect('/submit');
