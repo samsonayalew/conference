@@ -26,7 +26,7 @@ router.get('/download/:file', function(req, res, next){
          //
         //  res.attachment(path);
         if(doc[0].file[0].filename){
-          res.attachment(path.resolve('./uploads/' + doc[0].file[0].filename));
+          //res.attachment(path.resolve('./uploads/' + doc[0].file[0].filename));
           res.setHeader('Content-Type', 'application/pdf');
           res.setHeader("Content-Disposition", "attachment");
           res.download(path.resolve('./uploads/' + doc[0].file[0].filename), doc[0].file[0].originalname);
