@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+ div(class='row')
+  div(class='col-lg-2')
+  div(class='col-lg-10')
+   - each track, index in tracks
+      form(id='trackchange' action='assigntrack' method='post')
+       div(class='col-lg-8')
+        div(class='input-group' style='margin-top:20px;')
+         input(type='text' class='form-control' value=track.name aria-lebel='...' disabled)
+        div(class='input-group-btn')
+         select(class="form-control dropdown-menu dropdown-menu-right selector" id="sel#{index}" style="margin:0;")
+          - each coordinator in coordinators
+             option= coordinator.username

@@ -1,0 +1,110 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='shortcut icon' type='image/x-icon' href='images/favicon.ico')
+    link(href='stylesheets/style.css' rel='stylesheet', type='text/css')
+    link(href='stylesheets/bootstrap.min.css' rel='stylesheet' type='text/css')
+    link(href='stylesheets/angular-material.min.css' rel='stylesheet' type='text/css')
+    link(href='stylesheets/style.css' rel='stylesheet' type='text/css')
+  body
+   div(style="padding-right:0px;padding-left:0px;")
+    div(class='carousel-caption' style="height: 185px;")
+     img(src='images/logo_smu_small1.png' alt='st mary\'s logo')
+     p(style="color: aliceblue;font-size: 20px;/*text-shadow:3px 3px 6px rgb(210, 155, 155);*/margin: 0px 0 5px;") SMU CONFERENCE
+     p(style="color: aliceblue;font-size: 20px;margin: 0px 0 5px;") 11th conference on Private Higher Education
+     p(style='color:red;') 5 - 7 Aug 2015
+    div(class='navbar-collapse collapse' style='width:100%;background:rgb(35, 35, 37);')
+     ul(class='nav navbar-nav' style='margin-left:315px;')
+      li
+       a(href='/') Home
+      li
+       a(href='category1') Conference theme
+      li
+       a(href='schedule') Schedule
+      li
+       a(href='sponsors') Sponsors
+      li(class='dropdown')
+       a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') About
+        span(class='caret')
+       ul(class='dropdown-menu' id='about-menu')
+        li
+         a(href='submission_information') Submission Information
+        li
+         a(href='general_information') General Information
+        li
+         a(href='travel_information') Travel Information
+      - if(role === 'writer'){
+      li
+       a(href='/submit') Submit paper
+      li(class='dropdown')
+       a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
+        span(class='caret')
+       ul(class='dropdown-menu' id='email-menu')
+        li
+         a(href='/email') Compose
+        li
+         a(href='/sent') Sent
+      - } else if(role === 'reviewer'){
+      li
+       a(href='#') assigned papers
+      li(class='dropdown')
+       a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
+        span(class='caret')
+       ul(class='dropdown-menu' id='email-menu')
+        li
+         a(href='/email') Compose
+        li
+         a(href='/sent') Sent
+      - }else if(role === 'coordinator'){
+        li
+         a(href='/assignpaper') assign paper
+      - } else if(role === 'admin'){
+      li(class='dropdown')
+       a(href='#' role='button' class='dorpdown-toogle' data-toggle='dropdown' data-target='#') Administor
+        span(class='caret')
+       ul(class='dropdown-menu' id='admin-menu')
+        li
+         a(href='/assigntrack') assign track
+        li
+         a(href='/new_news') add news
+        li
+         a(href='/new_track') new track
+        li
+         a(href='/userroles') user roles
+      - }
+      - if(authStatus === 'loggedIn'){
+        li
+         a(href='/logout') logout
+      - } else {
+        li
+         a(href='/login') login
+        li
+         a(href='/register') register
+      - }
+    div(class='container row-fluid' style="background:aliceblue;")
+     div(class='col-sm-3' style='margin-top:20px;margin-left: -40px;')
+      div(id='sponsors' class='carousel slide' data-role='carousel' style="height:200px;")
+       div(class='carousel-inner' style="height: 190px;padding: 20px;")
+        div(class='item active')
+         img(src='images/st george.jpg' class="sponsorimg" alt='First slide')
+        div(class='item')
+         img(src='images/temarinet.jpg' class="sponsorimg" alt='second slide')
+       a(class='left carousel-control' href='#sponsors' role='button' data-slide='prev')
+        span(class='glyphicon glyphicon-chevron-left' style="border-radius: 6px;")
+       a(class='right carousel-control' href='#sponsors' role='button' data-slide='next')
+        span(class='glyphicon glyphicon-chevron-right' style="border-radius: 6px;")
+     div(class='col-sm-7' style="margin-top:20px;")
+      block content
+     div(class='col-sm-2' style='text-align:center;margin-top:20px;background:rgba(186,204,220,0.4);margin-left:40px;')
+      a(href='#')
+      div(class="social")
+       a(href="#" class='facebook')
+       a(href='#' class='twitter')
+      a(href='#' class='side-a') faq's
+      a(href='#' class='side-b') contact us
+      a(href="/newses" class="side-a") news
+   script(type='text/javascript' src='javascripts/jquery.min.js')
+   script(type='text/javascript' src='javascripts/bootstrap.min.js')
+   script(type='text/javascript' src='javascripts/validator.min.js')
+   script(type='text/javascript' src='javascripts/index.js')
