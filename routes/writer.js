@@ -22,12 +22,14 @@ router.get('/download/:file', function(req, res, next){
     if(req.params.file){
       var doc = req.params.file;
       users.find({'file.originalname': doc}, {'file.$':1}).toArray(function(err, doc){
-
+        //  var path = path.resolve(__dirname + '../uploads/' + doc[0].file[0].filename);
+         //
+        //  res.attachment(path);
         if(doc[0].file[0].filename){
           //res.attachment(path.resolve('./uploads/' + doc[0].file[0].filename));
           res.setHeader('Content-Type', 'application/pdf');
           res.setHeader("Content-Disposition", "attachment");
-         res.download(path.resolve('./uploads/' + doc[0].file[0].filename), doc[0].file[0].originalname);
+          res.download(path.resolve('./uploads/' + doc[0].file[0].filename), doc[0].file[0].originalname);
        }else{
          res.status(400).redirect('/submit');
        }
