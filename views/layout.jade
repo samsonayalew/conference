@@ -9,12 +9,12 @@ html
     link(href='stylesheets/style.css' rel='stylesheet' type='text/css')
   body
    div(style="padding-right:0px;padding-left:0px;")
-    div(class='carousel-caption' style="height: 185px;")
-     img(src='images/logo_smu_small1.png' alt='st mary\'s logo')
-     p(style="color: aliceblue;font-size: 20px;/*text-shadow:3px 3px 6px rgb(210, 155, 155);*/margin: 0px 0 5px;") SMU CONFERENCE
-     p(style="color: aliceblue;font-size: 20px;margin: 0px 0 5px;") 11th conference on Private Higher Education
-     p(style='color:red;') 5 - 7 Aug 2015
-    div(class='navbar-collapse collapse' style='width:100%;background:rgb(35, 35, 37);')
+    div(class='carousel-caption bgtop')
+     img(src='images/conference.png' alt='st mary\'s logo' style='position: static;height: 170px;')
+     //p(style="color: aliceblue;font-size: 20px;/*text-shadow:3px 3px 6px rgb(210, 155, 155);*/margin: 0px 0 5px;") SMU CONFERENCE
+     //p(style="color: aliceblue;font-size: 20px;margin: 0px 0 5px;") 11th conference on Private Higher Education
+     //p(style='color:#FFDB00;') 5 - 7 Aug 2015
+    div(class='navbar-collapse collapse' style='width:100%;background:#FFFFFF;')
      ul(class='nav navbar-nav' style='margin-left:315px;')
       li
        a(href='/') Home
@@ -99,10 +99,10 @@ html
      div(class='col-sm-2' style='text-align:center;margin-top:20px;background:rgba(186,204,220,0.4);margin-left:40px;')
       a(href='#')
       div(class="social")
-       a(href="#" class='facebook')
-       a(href='#' class='twitter')
-      a(href='#' class='side-a') faq's
-      a(href='#' class='side-b') contact us
+       a(href="https://www.facebook.com/smu.edu.et" class='facebook' target="_blank")
+       a(href='https://twitter.com/intent/follow?original_referer=http%3A%2F%2Fwww.smuc.edu.et%2F&screen_name=SMUCEthiopia&tw_p=followbutton&variant=2.0' class='twitter' target="_blank")
+      a(href='/faq' class='side-a') FAQ
+      a(href='/contactus' class='side-b') contact us
       a(href="/newses" class="side-a") news
    script(type='text/javascript' src='javascripts/jquery.min.js')
    script(type='text/javascript' src='javascripts/bootstrap.min.js')
