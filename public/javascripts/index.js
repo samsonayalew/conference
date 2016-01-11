@@ -45,7 +45,10 @@ $('#loginsubmit').click(function(e){
   $.ajax({
     method: "POST",
     url: 'loginpost',
-    data:{"email":email, "password":password}
+    data:{"email":email, "password":password},
+    success: function(data){
+      window.location.href = "/";
+    }
   });
 });
 

@@ -194,3 +194,10 @@ hr{
     margin-left:30px;
     margin-top:10px;
 }
+.bgtop{
+  height: 185px;
+  background: url(../images/reb_bg.png) repeat-x;
+  padding-bottom: 15px;
+  padding-top: 10px;
+  width: 100%;
+}

@@ -47,35 +47,6 @@ router.get('/travel_information', function(req, res, next){
   res.render('travel_information', {title: 'Conference | Travel Information'});
   }
 });
-//post back for login page
-router.post('/loginpost', function(req, res, next){
-    MongoClient.connect(connString, function(err, db){
-      if(err) throw err;
-      users = db.collection('users');
-      users.find({'_id':req.body.email}).toArray(function(err, user){
-        if(err) throw err;
-        db.close();
-        if(user[0].password && user[0]._id){
-        var decipher = crypto.createDecipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
-        decipher.update(user[0].password, 'base64', 'utf8');
-        var decrypted = decipher.final('utf8');
-        console.log(decrypted);
-        if(req.body.password === decrypted){
-          req.session.email = user[0]._id;
-			    req.session.authStatus = 'loggedIn';
-				  req.session.user = user[0].username;
-				  req.session.role = user[0].role;
-          res.render('home', {'title':'SMU Conference', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
-        }else{
-          res.status(500).redirect('loginpost', {error:"error"});
-        }
-      }else{
-        //res.status(500).redirect('/login',{title: 'Conference | login', error:'error'});
-        res.status(500).render('loginpost', {error:'error'});
-      }
-      });
-    });
-});
 //get request for register page
 router.get('/register', function(req, res, next){
   res.render('register', {title : 'Conference | Register' });
@@ -188,7 +159,35 @@ router.get('/sent', function(req, res, next){
   })
   })
 });
-
+//post back for login page
+router.post('/loginpost', function(req, res, next){
+    MongoClient.connect(connString, function(err, db){
+      if(err) throw err;
+      users = db.collection('users');
+      users.find({'_id':req.body.email}).toArray(function(err, user){
+        if(err) throw err;
+        db.close();
+        if(user[0].password && user[0]._id){
+          var decipher = crypto.createDecipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
+          decipher.update(user[0].password, 'base64', 'utf8');
+          var decrypted = decipher.final('utf8');
+          if(req.body.password === decrypted){
+            req.session.email = user[0]._id;
+            req.session.authStatus = 'loggedIn';
+            req.session.user = user[0].username;
+            req.session.role = user[0].role;
+            res.redirect('/');
+            // res.render('home', {'title':'SMU Conference', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+          }else{
+            res.status(500).redirect('loginpost', {error:"error"});
+          }
+        }else{
+        //res.status(500).redirect('/login',{title: 'Conference | login', error:'error'});
+          res.status(500).render('loginpost', {error:'error'});
+        }
+      });
+    });
+});
 router.get('/logout', function(req, res, next){
   delete req.session.authStatus;
   delete req.session.user;
@@ -196,7 +195,26 @@ router.get('/logout', function(req, res, next){
   //res.render('home', { title: 'Conference SMU' });
   res.redirect('/');
 });
-
+//faq
+router.get('/faq', function(req, res, next){
+      if(req.session.authStatus && req.session.role === 'writer'){
+      res.render('faq', { title: 'Conference | FAQ', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    } else if(req.session.authStatus && req.session.role === 'reviewer'){
+    res.render('faq', { title: 'Conference | FAQ', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    } else {
+      res.render('faq', { title: 'Conference | FAQ'});
+    }
+});
+//contact US
+router.get('/contactus', function(req, res, next){
+      if(req.session.authStatus && req.session.role === 'writer'){
+      res.render('contactus', { title: 'Conference | Contact Us', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    } else if(req.session.authStatus && req.session.role === 'reviewer'){
+    res.render('contactus', { title: 'Conference | Contact Us', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    } else {
+      res.render('contactus', { title: 'Conference | Contact Us'});
+    }
+});
 router.get('/category1', function(req, res, next){
   if(req.session.authStatus){
     MongoClient.connect(connString, function(err, db){
