@@ -26,8 +26,7 @@ $('.selector').on('change', function() {
 		}
 	});
 });
-
-
+//role selection
 $( ".roleselector" ).change(function(e){
   var value =  $(this).val();
   var id = e.target.id;
@@ -35,6 +34,15 @@ $( ".roleselector" ).change(function(e){
     method: "POST",
     url: "rolechange",
     data: { role: value, id: id }
+  });
+});
+$(".trackselector").change(function(e){
+  var value =$(this).val();
+  var id = e.target.id;
+  $.ajax({
+    method: "POST",
+    url: "trackchange",
+    data: {coordinator: value, track: id}
   });
 });
 

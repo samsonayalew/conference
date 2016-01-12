@@ -33,6 +33,23 @@ router.get('/assigntrack', function(req, res, next){
     });
   });
 });
+//post back to change track to the coordinator
+router.post('/trackchange', function(req, res, next){
+  MongoClient.connect(connString, function(err, db){
+    if(err) throw err;
+    var track = db.collection('track');
+    track.updateOne(
+      {name:req.body.track},
+      {
+        $set: {coordinator: req.body.coordinator}
+      },
+      {$upsert: true}, function(err, result){
+          if(err) throw err;
+          db.close();
+          res.redirect('assigntrack');
+      });
+  });
+});
 
 router.get('/userroles', function(req, res, next){
   MongoClient.connect(connString, function(err, db){
