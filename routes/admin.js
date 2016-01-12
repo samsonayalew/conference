@@ -19,13 +19,12 @@ router.get('/assigntrack', function(req, res, next){
     var track = db.collection('track');
     track.find({}).toArray(function(err, tracks){
       if(err) throw err;
-      console.log(util.inspect(tracks));
       var users = db.collection('users');
       users.find({'role':'coordinator'}).toArray(function(err, users){
         if(err) throw err;
-
         db.close();
         if(req.session.authStatus && req.session.role === 'admin'){
+          console.log(util.inspect(users));
           res.render('admin/assigntrack',{title: 'Conference | Assign Track', 'username':req.session.username,'coordinators':users, 'role':req.session.role, tracks:tracks, 'authStatus':'loggedIn'});
         }else{
           res.redirect('404');

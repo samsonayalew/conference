@@ -115,8 +115,9 @@ hr{
 }
 .side-a{
   display: block;
-  font-family: sans-serif;
+  font-family: serif;
   font-size: 20px;
+  text-decoration:none !important;
 }
 .social{
   margin-top: 10px;

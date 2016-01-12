@@ -9,7 +9,8 @@ block content
        div(class='col-lg-8')
         div(class='input-group' style='margin-top:20px;')
          input(type='text' class='form-control' value=track.name aria-lebel='...' disabled)
-        div(class='input-group-btn')
-         select(class="form-control dropdown-menu dropdown-menu-right selector" id="sel#{index}" style="margin:0;")
-          - each coordinator in coordinators
-             option= coordinator.username
+         div(class="input-group-btn")
+          select(class="form-control dropdown-menu dropdown-menu-right roleselector" id="#{coordinator.}" style="margin:0;")
+           option(value='' disabled selected) Assign Track
+           - each coordinator in coordinators
+              option(value='#{coordinator._id}')= coordinator._id

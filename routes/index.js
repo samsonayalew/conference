@@ -176,7 +176,7 @@ router.post('/loginpost', function(req, res, next){
             req.session.authStatus = 'loggedIn';
             req.session.user = user[0].username;
             req.session.role = user[0].role;
-            res.redirect('/');
+            res.end();
             // res.render('home', {'title':'SMU Conference', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
           }else{
             res.status(500).redirect('loginpost', {error:"error"});
@@ -278,5 +278,4 @@ router.get('/sponsors', function(req, res, next){
     res.render('sponsors', {title: 'Conference | Sponsors'});
   }
 });
-
 module.exports = router;
