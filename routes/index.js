@@ -84,15 +84,23 @@ router.post('/register', function(req, res, next){
 });
 
 router.get('/email', function(req, res, next){
-    if(req.session.authStatus && req.session.role === 'writer'){
-    res.render('writer/email', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    if(req.session.authStatus && req.session.role === 'coordinator'){
+    res.render('coordinator/email', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else if(req.session.authStatus && req.session.role === 'reviewer'){
   res.render('reviewer/email', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else {
     res.redirect('404');
   }
 });
-
+router.get('/inbox', function(req, res, next){
+    if(req.session.authStatus && req.session.role === 'coordinator'){
+    res.render('coordinator/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+  } else if(req.session.authStatus && req.session.role === 'reviewer'){
+  res.render('reviewer/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+  } else {
+    res.redirect('404');
+  }
+});
 router.post('/email', function(req, res, next){
   var transporter = nodemailer.createTransport({
     host: "213.55.83.211", // hostname
@@ -148,10 +156,10 @@ router.get('/sent', function(req, res, next){
     users.find({_id: req.session.email}).sort({"email.date":1}).toArray(function(err, user){
     if(err) throw err;
     db.close();
-    if(req.session.authStatus && req.session.role === 'writer'){
-      res.render('sent', { title: 'Conference | sent','emails': user[0].email, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    if(req.session.authStatus && req.session.role === 'coordinator'){
+      res.render('coordinator/sent', { title: 'Conference | sent','emails': user[0].email, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else if(req.session.authStatus && req.session.role === 'reviewer'){
-      res.render('sent', { title: 'Conference | sent','emails': user[0].email,  'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('reviewer/sent', { title: 'Conference | sent','emails': user[0].email,  'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else {
       res.redirect('404');
     }

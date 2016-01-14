@@ -36,6 +36,7 @@ $( ".roleselector" ).change(function(e){
     data: { role: value, id: id }
   });
 });
+//select track for coordinator
 $(".trackselector").change(function(e){
   var value =$(this).val();
   var id = e.target.id;
@@ -44,6 +45,10 @@ $(".trackselector").change(function(e){
     url: "trackchange",
     data: {coordinator: value, track: id}
   });
+});
+//assign paper for writer
+$('.assignpaper').change(function(e){
+  
 });
 
 $('#loginsubmit').click(function(e){

@@ -3,13 +3,19 @@ extends ../layout
 block content
  div(class='row')
   div(class='col-lg-2')
+   h3= track.name
   div(class='col-lg-10')
-   - each file, index in files
-      form(id="userChange" action="changeHandler")
-       div(class="col-lg-8")
-        div(class="input-group" style='margin-top:20px;')
-         input(type="text" class="form-control" value= file.originalname aria-label="..." disabled)
-         div(class="input-group-btn")
-          select(class="form-control dropdown-menu dropdown-menu-right selector" id="sel#{index}" style="margin:0;")
-           - each reviewer in reviewers
-              option= reviewer.username1
+   - each writer, index in writers
+    - if(writer.file)
+     - each file, index in writer.file
+      - if(track.name === file.track)
+         form(id="userChange" action="changeHandler")
+          div(class="col-lg-9")
+           div(class="input-group" style='margin-top:20px;')
+            input(type="text" class="form-control" value= file.originalname aria-label="..." disabled)
+            div(class="input-group-btn")
+             select(class="form-control dropdown-menu dropdown-menu-right assignpaper" id="#{writer._id}" style="margin:0;")
+              option(value='' disabled selected) select reviewer
+              - each reviewer in reviewers
+                 option= reviewer._id
+    - else continue;

@@ -27,13 +27,16 @@ router.get('/assignpaper', function(req, res, next){
       var arrReviewer = users.filter(function(user){
         return (user.role === 'reviewer');
       });
-
-    if(req.session.authStatus && req.session.role === 'coordinator'){
-      db.close();
-      res.render('coordinator/assignpaper', { title: 'Conference | assign paper', 'reviewers':arrReviewer, 'files': arrWriter[0].file,'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
-    } else {
-      res.redirect('404');
-    }
+      var track = db.collection('track');
+      track.find({coordinator: req.session.email}).toArray(function(err, track){
+        if(err) throw err;
+        if(req.session.authStatus && req.session.role === 'coordinator'){
+          db.close();
+          res.render('coordinator/assignpaper', { title: 'Conference | assign paper','track':track[0], 'reviewers':arrReviewer, 'writers': arrWriter,'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+        } else {
+          res.redirect('404');
+        }
+    });
   });
   });
 });

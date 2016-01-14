@@ -37,14 +37,6 @@ html
       - if(role === 'writer'){
       li
        a(href='/submit') Submit paper
-      li(class='dropdown')
-       a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
-        span(class='caret')
-       ul(class='dropdown-menu' id='email-menu')
-        li
-         a(href='/email') Compose
-        li
-         a(href='/sent') Sent
       - } else if(role === 'reviewer'){
       li
        a(href='#') assigned papers
@@ -55,10 +47,22 @@ html
         li
          a(href='/email') Compose
         li
+         a(href='/inbox') Inbox
+        li
          a(href='/sent') Sent
       - }else if(role === 'coordinator'){
         li
          a(href='/assignpaper') assign paper
+        li(class='dropdown')
+         a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
+          span(class='caret')
+         ul(class='dropdown-menu' id='email-menu')
+          li
+           a(href='/email') Compose
+          li
+           a(href='/inbox') Inbox
+          li
+           a(href='/sent') Sent
       - } else if(role === 'admin'){
       li(class='dropdown')
        a(href='#' role='button' class='dorpdown-toogle' data-toggle='dropdown' data-target='#') Administor
