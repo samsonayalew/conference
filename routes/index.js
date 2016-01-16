@@ -8,6 +8,7 @@ var multer = require('multer');
 var nodemailer = require('nodemailer');
 var upload = multer({ dest: 'uploads/' });
 var images = multer({dest: 'news_images/'});
+var attachment = multer({dest: 'attachment/'});
 
 var MongoClient = require('mongodb').MongoClient;
 var connString = 'mongodb://localhost:27017/conference';
@@ -93,33 +94,51 @@ router.get('/email', function(req, res, next){
   }
 });
 router.get('/inbox', function(req, res, next){
-    if(req.session.authStatus && req.session.role === 'coordinator'){
-    res.render('coordinator/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
-  } else if(req.session.authStatus && req.session.role === 'reviewer'){
-  res.render('reviewer/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
-  } else {
-    res.redirect('404');
-  }
+    if(req.session.authStatus && req.session.role === 'coordinator') {
+      res.render('coordinator/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    }else if(req.session.authStatus && req.session.role === 'writer') {
+      res.render('writer/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    } else if(req.session.authStatus && req.session.role === 'reviewer') {
+      res.render('reviewer/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    } else {
+      res.redirect('404');
+    }
 });
-router.post('/email', function(req, res, next){
+//send email
+router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'subject', maxCount:1},
+            {name:'text', maxCount:1}, {name:'file', maxCount:1}]), function(req, res, next){
   var transporter = nodemailer.createTransport({
-    host: "213.55.83.211", // hostname
-    // secureConnection: false, // TLS requires secureConnection to be false
-    // port: 587, // port for secure SMTP
+    host: "213.55.83.211",
     auth: {
-        user: "samson_ayalew@smuc.edu.et",
+        user: "conference@smuc.edu.et",
         pass: "12345aA"
-    },
-    // tls: {
-    //     ciphers:'SSLv3'
-    // }
+    }
   });
+  //defind a file to attach
+  var file = {
+    originalname: req.files.file[0].originalname,
+    encoding: req.files.file[0].encoding,
+    mimitype: req.files.file[0].mimetype,
+    destination: req.files.file[0].destination,
+    filename: req.files.file[0].filename,
+    size: req.files.file[0].size,
+    date: new Date()
+  };
+      if(req.session.role === 'coordinator'){
+        var from = 'conference@smuc.edu.et';
+      } else {
+        var from = req.session.email;
+      }
   var mailOptions = {
-      from: 'samson_ayalew@smuc.edu.et', // sender address
+      from: from, //sender address
       to: req.body.address, // list of receivers
       subject: req.body.subject, // Subject line
-      text: req.body.text // plaintext body
-      //html: '<b>Hello world ✔</b>' // html body
+      text: req.body.text, // plaintext body
+      attachments: [
+        {   // file on disk as an attachment
+            filename: file.originalname,
+            path: '/attachment/'+ file.filename // stream this file
+        }]
   };
 
   // send mail with defined transport object
@@ -134,17 +153,29 @@ router.post('/email', function(req, res, next){
         users.findAndModify(
           {_id:req.session.email},
           {_id: 1},
-          {$push:{email:{to: req.body.address,
+          {$push:{sent:{to: req.body.address,
                   subject:req.body.subject,
                   text: req.body.text,
                   date: new Date()
           }}},
           {upsert: true}, function(err, result){
           if(err) throw err;
-          db.close();
-          console.log(result);
-          res.redirect('/email');
+          users.findAndModify(
+            {_id:req.body.address},
+            {_id: 1},
+            {$push:{inbox:{to: req.body.address,
+                    subject:req.body.subject,
+                    text: req.body.text,
+                    read: false,
+                    attachment: file,
+                    date: new Date()
+            }}},
+            {upsert: true}, function(err, result){
+              db.close();
+              console.log(result);
+              res.redirect('/email');
         });
+      });
       });
   });
 });

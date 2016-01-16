@@ -5,6 +5,7 @@ var express = require('express');
 var router = express.Router();
 var crypto = require('crypto');
 var multer = require('multer');
+var path = require('path');
 var nodemailer = require('nodemailer');
 var upload = multer({ dest: 'uploads/' });
 var images = multer({dest: 'news_images/'});
@@ -14,7 +15,7 @@ var connString = 'mongodb://localhost:27017/conference';
 var router = express.Router();
 /* GET users listing. */
 
-router.get('/assignpaper', function(req, res, next){
+router.get('/downloadpaper', function(req, res, next){
   MongoClient.connect(connString, function(err, db){
     var users = db.collection('users');
     users.find({}).toArray(function(err, users){
@@ -32,7 +33,7 @@ router.get('/assignpaper', function(req, res, next){
         if(err) throw err;
         if(req.session.authStatus && req.session.role === 'coordinator'){
           db.close();
-          res.render('coordinator/assignpaper', { title: 'Conference | assign paper','track':track[0], 'reviewers':arrReviewer, 'writers': arrWriter,'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+          res.render('coordinator/downloadpaper', { title: 'Conference | download paper','track':track[0], 'reviewers':arrReviewer, 'writers': arrWriter,'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
         } else {
           res.redirect('404');
         }
@@ -41,9 +42,29 @@ router.get('/assignpaper', function(req, res, next){
   });
 });
 
-router.post('/selectionchange', function(req, res, next){
-  res.end();
-  console.log(util.inspect(req.body));
+router.get('/papers/:file', function(req, res, next){
+  MongoClient.connect(connString, function(err, db){
+    if(err) throw err;
+    var users = db.collection('users');
+    if(req.params.file){
+      var doc = req.params.file;
+      users.find({'file.originalname': doc}, {'file.$':1}).toArray(function(err, doc){
+        //  var path = path.resolve(__dirname + '../uploads/' + doc[0].file[0].filename);
+         //
+        //  res.attachment(path);
+        if(doc[0].file[0].filename){
+          //res.attachment(path.resolve('./uploads/' + doc[0].file[0].filename));
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader("Content-Disposition", "attachment");
+          res.download(path.resolve('./uploads/' + doc[0].file[0].filename), doc[0].file[0].originalname);
+       }else{
+         res.status(400).redirect('/submit');
+       }
+      });
+    }else{
+      res.status(400).redirect('/submit');
+    }
+  });
 });
 
 module.exports = router;

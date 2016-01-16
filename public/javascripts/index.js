@@ -9,7 +9,8 @@ $.fn.validator.Constructor.VALIDATORS.filesize = function ($el) {
     }
 };
 //validate upload FormData
-$('#myForm').validator()
+$('#myForm').validator();
+
 $('#mycarousel').carousel({
 	interval:6000
 });//mycarousel
@@ -48,7 +49,7 @@ $(".trackselector").change(function(e){
 });
 //assign paper for writer
 $('.assignpaper').change(function(e){
-  
+
 });
 
 $('#loginsubmit').click(function(e){
@@ -77,10 +78,6 @@ $('#loginsubmit').click(function(e){
 //     }
 //   });
 // });
-
-
-
-
 
 //on submission of paper
 /*

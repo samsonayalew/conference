@@ -37,6 +37,8 @@ html
       - if(role === 'writer'){
       li
        a(href='/submit') Submit paper
+      li
+       a(href='/inbox') Inbox
       - } else if(role === 'reviewer'){
       li
        a(href='#') assigned papers
@@ -52,7 +54,7 @@ html
          a(href='/sent') Sent
       - }else if(role === 'coordinator'){
         li
-         a(href='/assignpaper') assign paper
+         a(href='/downloadpaper') download papers
         li(class='dropdown')
          a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
           span(class='caret')

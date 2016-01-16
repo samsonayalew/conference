@@ -65,7 +65,6 @@ router.post('/upload', upload.fields([{name:'track', maxCount:1},{name:'submissi
   MongoClient.connect(connString, function(err, db){
     if(err) throw err;
     var users = db.collection('users');
-    var date = new Date();
     var file = {
       track: req.body.track,
       submissiontype:req.body.submissiontype,
@@ -78,7 +77,7 @@ router.post('/upload', upload.fields([{name:'track', maxCount:1},{name:'submissi
       destination: req.files.file[0].destination,
       filename: req.files.file[0].filename,
       size: req.files.file[0].size,
-      date: date
+      date: new Date()
     };
     users.updateOne({'_id': req.session.email, 'file.originalname': file.filename}, {'$push':{'file':file}},
     {'upsert':true}, function(err, result){
