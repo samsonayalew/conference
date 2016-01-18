@@ -1,4 +1,7 @@
 extends ../layout
 
 block content
-  h1 Inbox
+  - if(inbox)
+      p= JSON.stringify(inbox)
+  - else
+      h1 Inbox

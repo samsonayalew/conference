@@ -37,6 +37,7 @@ block content
      div(class="help-block with-errors")
     button(name='Upload' type='submit' class='btn btn-primary') Upload
    div(class='row')
-    each document in files
-     li(class="uploadeddoc")
-      a(href="download/#{document.originalname}"  target="_blank")= document.originalname
+    - if(document) 
+      - each document in files
+         li(class="uploadeddoc")
+          a(href="download/#{document.originalname}"  target="_blank")= document.originalname

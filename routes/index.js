@@ -94,15 +94,22 @@ router.get('/email', function(req, res, next){
   }
 });
 router.get('/inbox', function(req, res, next){
+  MongoClient.connect(connString, function(err, db){
+    if(err) throw err;
+
+    var users = db.collection('users');
+    users.find({_id:req.session.email},{inbox:1}).toArray(function(err, users){
     if(req.session.authStatus && req.session.role === 'coordinator') {
-      res.render('coordinator/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('coordinator/inbox', { title: 'Conference | email', 'inbox':users.inbox, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
     }else if(req.session.authStatus && req.session.role === 'writer') {
-      res.render('writer/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('writer/inbox', { title: 'Conference | email', 'inbox':users.inbox, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else if(req.session.authStatus && req.session.role === 'reviewer') {
-      res.render('reviewer/inbox', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('reviewer/inbox', { title: 'Conference | email', 'inbox':users.inbox, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else {
       res.redirect('404');
     }
+  });
+  });
 });
 //send email
 router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'subject', maxCount:1},
@@ -115,15 +122,17 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
     }
   });
   //defind a file to attach
-  var file = {
-    originalname: req.files.file[0].originalname,
-    encoding: req.files.file[0].encoding,
-    mimitype: req.files.file[0].mimetype,
-    destination: req.files.file[0].destination,
-    filename: req.files.file[0].filename,
-    size: req.files.file[0].size,
-    date: new Date()
-  };
+    if(req.files){
+        var file = {
+        originalname: req.files.file[0].originalname,
+        encoding: req.files.file[0].encoding,
+        mimitype: req.files.file[0].mimetype,
+        destination: req.files.file[0].destination,
+        filename: req.files.file[0].filename,
+        size: req.files.file[0].size,
+        date: new Date()
+        };
+  }
       if(req.session.role === 'coordinator'){
         var from = 'conference@smuc.edu.et';
       } else {
@@ -215,7 +224,7 @@ router.post('/loginpost', function(req, res, next){
             req.session.authStatus = 'loggedIn';
             req.session.user = user[0].username;
             req.session.role = user[0].role;
-            res.end();
+            res.render('home');
             // res.render('home', {'title':'SMU Conference', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
           }else{
             res.status(500).redirect('loginpost', {error:"error"});
