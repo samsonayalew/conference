@@ -17,6 +17,9 @@ $('#mycarousel').carousel({
 $('#sponsors').carousel({
 	interval:5000
 });//sponsors
+$('#corganizers').carousel({
+	interval:5000
+});//co-orgnaizers
 $('.selector').on('change', function() {
 	$.ajax({
 		type:"POST",

@@ -15,46 +15,32 @@ html
      //p(style="color: aliceblue;font-size: 20px;margin: 0px 0 5px;") 11th conference on Private Higher Education
      //p(style='color:#FFDB00;') 5 - 7 Aug 2015
     div(class='navbar-collapse collapse' style='width:100%;background:#FFFFFF;')
-     ul(class='nav navbar-nav' style='margin-left:475px;')
-      li
-       a(href='/') Home
-      li
-       a(href='category1') Conference theme
-      li
-       a(href='schedule') Schedule
-      li
-       a(href='sponsors') Sponsors
-      li(class='dropdown')
-       a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') About
-        span(class='caret')
-       ul(class='dropdown-menu' id='about-menu')
+     table(border='1', align='center')
+       ul(class='nav navbar-nav' style='margin-left:275px;')
         li
-         a(href='submission_information') Submission Information
+         a(href='/') Home
         li
-         a(href='general_information') General Information
+         a(href='category1') Themes
         li
-         a(href='travel_information') Travel Information
-      - if(role === 'writer'){
-      li
-       a(href='/submit') Submit paper
-      li
-       a(href='/inbox') Inbox
-      - } else if(role === 'reviewer'){
-      li
-       a(href='#') assigned papers
-      li(class='dropdown')
-       a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
-        span(class='caret')
-       ul(class='dropdown-menu' id='email-menu')
+          a(href='submission_information') Submission
         li
-         a(href='/email') Compose
+         a(href='schedule') Schedule
+        //li
+         a(href='sponsors') Sponsors
+        //li
+           a(href='general_information') General Information
+        li
+           a(href='travel_information') Travel & Hotel Information
+        li
+          a(href='general_information') Contact Us
+        - if(role === 'writer'){
+        li
+         a(href='/submit') Submit paper
         li
          a(href='/inbox') Inbox
+        - } else if(role === 'reviewer'){
         li
-         a(href='/sent') Sent
-      - }else if(role === 'coordinator'){
-        li
-         a(href='/downloadpaper') download papers
+         a(href='#') assigned papers
         li(class='dropdown')
          a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
           span(class='caret')
@@ -65,33 +51,46 @@ html
            a(href='/inbox') Inbox
           li
            a(href='/sent') Sent
-      - } else if(role === 'admin'){
-      li(class='dropdown')
-       a(href='#' role='button' class='dorpdown-toogle' data-toggle='dropdown' data-target='#') Administor
-        span(class='caret')
-       ul(class='dropdown-menu' id='admin-menu')
-        li
-         a(href='/assigntrack') assign track
-        li
-         a(href='/new_news') add news
-        li
-         a(href='/new_track') new track
-        li
-         a(href='/userroles') user roles
-      - }
-      - if(authStatus === 'loggedIn'){
-        li
-         a(href='/logout') logout
-      - } else {
-        li
-         a(href='/login') login
-        li
-         a(href='/register') register
-      - }
+        - }else if(role === 'coordinator'){
+          li
+           a(href='/downloadpaper') download papers
+          li(class='dropdown')
+           a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
+            span(class='caret')
+           ul(class='dropdown-menu' id='email-menu')
+            li
+             a(href='/email') Compose
+            li
+             a(href='/inbox') Inbox
+            li
+             a(href='/sent') Sent
+        - } else if(role === 'admin'){
+        li(class='dropdown')
+         a(href='#' role='button' class='dorpdown-toogle' data-toggle='dropdown' data-target='#') Administor
+          span(class='caret')
+         ul(class='dropdown-menu' id='admin-menu')
+          li
+           a(href='/assigntrack') assign track
+          li
+           a(href='/new_news') add news
+          li
+           a(href='/new_track') new track
+          li
+           a(href='/userroles') user roles
+        - }
+        - if(authStatus === 'loggedIn'){
+          li
+           a(href='/logout') logout
+        - } else {
+          li
+           a(href='/login') login
+          li
+           a(href='/register') register
+        - }
     div(class='container row-fluid' style="background:aliceblue;")
-     div(class='col-sm-3' style='margin-top:20px;margin-left: -40px;')
-      div(id='sponsors' class='carousel slide' data-role='carousel' style="height:200px;")
-       div(class='carousel-inner' style="height: 190px;padding: 20px;")
+     div(class='col-sm-2' style='margin-top:20px;margin-left: -40px;')
+      div(id='sponsors' class='carousel slide' data-role='carousel')
+       div(class='carousel-inner' style="height: 120px;")
         div(class='item active')
          img(src='images/st george.jpg' class="sponsorimg" alt='First slide')
         div(class='item')
@@ -100,7 +99,19 @@ html
         span(class='glyphicon glyphicon-chevron-left' style="border-radius: 6px;")
        a(class='right carousel-control' href='#sponsors' role='button' data-slide='next')
         span(class='glyphicon glyphicon-chevron-right' style="border-radius: 6px;")
-     div(class='col-sm-7' style="margin-top:20px;")
+      div(id='corganizers' class='carousel slide' data-role='carousel' style='margin-top:20px;')
+       div(class='carousel-inner' style="height: 120px;")
+        div(class='item active')
+         img(src='images/aau_logo.png' class="sponsorimg" alt='First slide')
+        div(class='item')
+         img(src='images/au.png' class="sponsorimg" alt='second slide')
+        div(class='item')
+         img(src='images/icde.png' class="sponsorimg" alt='third slide')
+       a(class='left carousel-control' href='#corganizers' role='button' data-slide='prev')
+        span(class='glyphicon glyphicon-chevron-left' style="border-radius: 6px;")
+       a(class='right carousel-control' href='#corganizers' role='button' data-slide='next')
+        span(class='glyphicon glyphicon-chevron-right' style="border-radius: 6px;")
+     div(class='col-sm-8' style="margin-top:20px;")
       block content
      div(class='col-sm-2' style='text-align:center;margin-top:20px;background:rgba(186,204,220,0.4);margin-left:40px;')
       a(href='#')
@@ -108,7 +119,7 @@ html
        a(href="https://www.facebook.com/smu.edu.et" class='facebook' target="_blank")
        a(href='https://twitter.com/intent/follow?original_referer=http%3A%2F%2Fwww.smuc.edu.et%2F&screen_name=SMUCEthiopia&tw_p=followbutton&variant=2.0' class='twitter' target="_blank")
       a(href='/faq' class='side-a') FAQ
-      a(href='/contactus' class='side-a') contact us
+      a(href='http://smuc.edu.et/index.php/research-publication/annual-national-conference-on-pheis' class='side-a' target="_blank" style='font-size: 18px;') Previous Conference
       a(href="/newses" class="side-a") news
    script(type='text/javascript' src='javascripts/jquery.min.js')
    script(type='text/javascript' src='javascripts/bootstrap.min.js')
