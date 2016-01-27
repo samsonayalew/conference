@@ -40,6 +40,10 @@ router.get('/general_information', function(req, res, next){
   res.render('general_information', {title: 'Conference | General Information'});
   }
 });
+//participate
+router.get('/participate', function(req, res, next){
+  res.render('participate', {title:'Conference | Participate'});
+});
 //Travel Information display
 router.get('/travel_information', function(req, res, next){
   if(req.session.authStatus){

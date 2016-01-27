@@ -8,7 +8,7 @@ html
     link(href='stylesheets/angular-material.min.css' rel='stylesheet' type='text/css')
     link(href='stylesheets/style.css' rel='stylesheet' type='text/css')
   body
-   div(style="padding-right:0px;padding-left:0px;")
+   div(style="padding-right:0px;padding-left:0px;margin-bottom:20px;")
     div(class='carousel-caption bgtop')
      img(src='images/conference.png' alt='st mary\'s logo' style='position: static;height: 170px;')
      //p(style="color: aliceblue;font-size: 20px;/*text-shadow:3px 3px 6px rgb(210, 155, 155);*/margin: 0px 0 5px;") SMU CONFERENCE
@@ -25,6 +25,8 @@ html
           a(href='submission_information') Submission
         li
          a(href='schedule') Schedule
+        li
+         a(href='participate') Participate
         //li
          a(href='sponsors') Sponsors
         //li
@@ -88,9 +90,9 @@ html
            a(href='/register') register
         - }
     div(class='container row-fluid' style="background:aliceblue;")
-     div(class='col-sm-2' style='margin-top:20px;margin-left: -40px;')
-      div(id='sponsors' class='carousel slide' data-role='carousel')
-       div(class='carousel-inner' style="height: 120px;")
+     div(class='col-sm-3' style='margin-top:20px;margin-left: -40px;')
+      div(id='sponsors' class='carousel slide' data-role='carousel' style='margin-left:53px;width:215px;')
+       div(class='carousel-inner' style="height: 200px;")
         div(class='item active')
          img(src='images/st george.jpg' class="sponsorimg" alt='First slide')
         div(class='item')
@@ -99,28 +101,46 @@ html
         span(class='glyphicon glyphicon-chevron-left' style="border-radius: 6px;")
        a(class='right carousel-control' href='#sponsors' role='button' data-slide='next')
         span(class='glyphicon glyphicon-chevron-right' style="border-radius: 6px;")
-      div(id='corganizers' class='carousel slide' data-role='carousel' style='margin-top:20px;')
-       div(class='carousel-inner' style="height: 120px;")
+      div(id='corganizers' class='carousel slide' data-role='carousel' style='margin-top:20px;margin-left:53px;width:215px;')
+       div(class='carousel-inner' style="height: 200px;")
         div(class='item active')
-         img(src='images/aau_logo.png' class="sponsorimg" alt='First slide')
+         a(href='http://www.aau.org' target='_blank')
+          img(src='images/aau_logo.png' class="sponsorimg" alt='First slide')
         div(class='item')
-         img(src='images/au.png' class="sponsorimg" alt='second slide')
+         a(href='http://www.au.int' target='_blank')
+          img(src='images/au.png' class="sponsorimg" alt='second slide')
         div(class='item')
-         img(src='images/icde.png' class="sponsorimg" alt='third slide')
+         a(href='http://www.icde.org' target='_blank')
+          img(src='images/icde.png' class="sponsorimg" alt='third slide')
        a(class='left carousel-control' href='#corganizers' role='button' data-slide='prev')
         span(class='glyphicon glyphicon-chevron-left' style="border-radius: 6px;")
        a(class='right carousel-control' href='#corganizers' role='button' data-slide='next')
         span(class='glyphicon glyphicon-chevron-right' style="border-radius: 6px;")
-     div(class='col-sm-8' style="margin-top:20px;")
+     div(class='col-sm-6' style="margin-top:20px;")
       block content
-     div(class='col-sm-2' style='text-align:center;margin-top:20px;background:rgba(186,204,220,0.4);margin-left:40px;')
-      a(href='#')
-      div(class="social")
-       a(href="https://www.facebook.com/smu.edu.et" class='facebook' target="_blank")
-       a(href='https://twitter.com/intent/follow?original_referer=http%3A%2F%2Fwww.smuc.edu.et%2F&screen_name=SMUCEthiopia&tw_p=followbutton&variant=2.0' class='twitter' target="_blank")
-      a(href='/faq' class='side-a') FAQ
-      a(href='http://smuc.edu.et/index.php/research-publication/annual-national-conference-on-pheis' class='side-a' target="_blank" style='font-size: 18px;') Previous Conference
-      a(href="/newses" class="side-a") news
+     div(class='col-sm-3')
+      div.row(style='text-align:center;margin-top:20px;background:rgba(186,204,220,0.4);margin-left:40px;')
+        a(href='#')
+        div(class="social")
+         a(href="https://www.facebook.com/smu.edu.et" class='facebook' target="_blank")
+         a(href='https://twitter.com/intent/follow?original_referer=http%3A%2F%2Fwww.smuc.edu.et%2F&screen_name=SMUCEthiopia&tw_p=followbutton&variant=2.0' class='twitter' target="_blank")
+        a(href='/faq' class='side-a') FAQ
+        a(href='http://smuc.edu.et/index.php/research-publication/annual-national-conference-on-pheis' class='side-a' target="_blank" style='font-size: 18px;') Previous Conference
+        a(href="/newses" class="side-a") news
+      div.row(style='text-align:center;margin-top:10px;margin-left:40px;')
+        h3 Key Speakers
+        div(class="row")
+          img(class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="60" height="60")
+          h4 Name
+          //p Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.
+        div(class="row")
+          img(class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="60" height="60")
+          h4 Name
+          //p Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.
+        div(class="row")
+          img(class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="60" height="60")
+          h4 Name
+          //p Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
    script(type='text/javascript' src='javascripts/jquery.min.js')
    script(type='text/javascript' src='javascripts/bootstrap.min.js')
    script(type='text/javascript' src='javascripts/validator.min.js')

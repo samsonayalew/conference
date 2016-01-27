@@ -114,6 +114,8 @@ hr{
   }
 }
 .side-a{
+  margin-top: 7px;
+  margin-bottom: 7px;
   display: block;
   font-family: serif;
   font-size: 20px;
