@@ -1,4 +1,5 @@
 var express = require('express');
+var favicon = require('serve-favicon');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -16,6 +17,7 @@ var admin = require('./routes/admin');
 
 var app = express();
 app.use(compression());
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -41,7 +43,7 @@ app.use(session({
     maxAge: 60000, // duration of the cookie in milliseconds, defaults to duration above
     ephemeral: false, // when true, cookie expires when the browser closes
     httpOnly: true,
-    secure:true
+    secure:false
   }
 }));
 app.use('/', routes);
