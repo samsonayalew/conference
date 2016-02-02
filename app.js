@@ -16,7 +16,7 @@ var coordinator = require('./routes/coordinator');
 var admin = require('./routes/admin');
 
 var app = express();
-app.use(compression());
+// app.use(compression());
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,23 +27,23 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser('iVm5WIXT38zufI6QX'));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  proxy: true,
+  name:'mycookie',
   secret:'iVm5WIXT38zufI6QXWW4ZiBRevs9aXr9',
   store: new MongoStore({
     url:'mongodb://localhost/conference'
   }),
   ttl: 14 * 24 * 60 * 60,
-  resave:true,
-  saveUninitialized:true,
+  resave: false,
+  saveUninitialized: true,
   cookie:{
     path: '/', // cookie will only be sent to requests under '/api'
     maxAge: 60000, // duration of the cookie in milliseconds, defaults to duration above
     ephemeral: false, // when true, cookie expires when the browser closes
     httpOnly: true,
-    secure:false
+    secure: false
   }
 }));
 app.use('/', routes);

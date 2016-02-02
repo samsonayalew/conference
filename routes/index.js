@@ -24,6 +24,46 @@ router.get('/', function(req, res, next) {
 router.get('/login', function(req, res, next){
       res.render('login', { title: 'Conference | Login' });
 });
+
+//post back for login page
+router.post('/loginpost', function(req, res, next){
+    MongoClient.connect(connString, function(err, db){
+      if(err) next(err);
+      users = db.collection('users');
+      users.find({'_id':req.body.email}).toArray(function(err, user){
+        if(err) throw err;
+        db.close();
+        if(user[0].password && user[0]._id){
+          var decipher = crypto.createDecipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
+          decipher.update(user[0].password, 'base64', 'utf8');
+          var decrypted = decipher.final('utf8');
+          if(req.body.password === decrypted){
+            req.session.email = user[0]._id;
+            req.session.authStatus = 'loggedIn';
+            req.session.user = user[0].username;
+            req.session.role = user[0].role;
+            res.redirect('/');
+            // res.render('home', {'title':'SMU Conference', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+          }else{
+            // res.status(500).redirect('login', {error:"error"});
+            res.status(500).end();
+          }
+        }else{
+          // res.status(500).render('login', {error:'error'});
+          res.status(500).end();
+        }
+      });
+    });
+});
+
+// router.get('/login/:id', function(req, res, next){
+//     if(req.session.authStatus){
+//     res.render('home', { title: 'Conference SMU', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+//     } else {
+//     res.render('home', { title: 'Conference SMU' });
+//     }
+// });
+
 //Submission Information display
 router.get('/submission_information', function(req, res, next){
   if(req.session.authStatus){
@@ -52,7 +92,7 @@ router.post('/participate', function(req, res, next){
    cipher.update(req.body.password, 'utf8', 'base64');
    var encrypted = cipher.final('base64');
    MongoClient.connect(connString, function(err, db){
-    if(err) throw err;
+    if(err) next(err);
 
     var users = db.collection('users');
     users.insert({
@@ -71,7 +111,7 @@ router.post('/participate', function(req, res, next){
       role:'participant',
       password:encrypted,
     },function(err, result){
-      if(err) throw err;
+      if(err) next(err);
       db.close();
       console.log(result);
       res.render('home',{title: 'SMU | Register', username: result.username, role:result.role});
@@ -97,7 +137,7 @@ router.post('/register', function(req, res, next){
  cipher.update(req.body.password, 'utf8', 'base64');
  var encrypted = cipher.final('base64');
  MongoClient.connect(connString, function(err, db){
-  if(err) throw err;
+  if(err) next(err);
 
   var users = db.collection('users');
   users.insert({
@@ -114,7 +154,7 @@ router.post('/register', function(req, res, next){
     role:'writer',
     password:encrypted,
   },function(err, result){
-    if(err) throw err;
+    if(err) next(err);
     db.close();
     console.log(result);
     res.render('home',{title: 'SMU | Register', username: result.username, role:result.role});
@@ -133,7 +173,7 @@ router.get('/email', function(req, res, next){
 });
 router.get('/inbox', function(req, res, next){
   MongoClient.connect(connString, function(err, db){
-    if(err) throw err;
+    if(err) next(err);
 
     var users = db.collection('users');
     users.find({_id:req.session.email},{inbox:1}).toArray(function(err, users){
@@ -229,7 +269,7 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
 
 router.get('/sent', function(req, res, next){
   MongoClient.connect(connString, function(err, db){
-    if(err) throw err;
+    if(err) next(err);
     users = db.collection('users');
     users.find({_id: req.session.email}).sort({"email.date":1}).toArray(function(err, user){
     if(err) throw err;
@@ -245,35 +285,7 @@ router.get('/sent', function(req, res, next){
   })
   })
 });
-//post back for login page
-router.post('/loginpost', function(req, res, next){
-    MongoClient.connect(connString, function(err, db){
-      if(err) throw err;
-      users = db.collection('users');
-      users.find({'_id':req.body.email}).toArray(function(err, user){
-        if(err) throw err;
-        db.close();
-        if(user[0].password && user[0]._id){
-          var decipher = crypto.createDecipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
-          decipher.update(user[0].password, 'base64', 'utf8');
-          var decrypted = decipher.final('utf8');
-          if(req.body.password === decrypted){
-            req.session.email = user[0]._id;
-            req.session.authStatus = 'loggedIn';
-            req.session.user = user[0].username;
-            req.session.role = user[0].role;
-            res.render('home');
-            // res.render('home', {'title':'SMU Conference', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
-          }else{
-            res.status(500).redirect('loginpost', {error:"error"});
-          }
-        }else{
-        //res.status(500).redirect('/login',{title: 'Conference | login', error:'error'});
-          res.status(500).render('loginpost', {error:'error'});
-        }
-      });
-    });
-});
+
 router.get('/logout', function(req, res, next){
   delete req.session.authStatus;
   delete req.session.user;
@@ -301,7 +313,7 @@ router.get('/contactus', function(req, res, next){
       res.render('contactus', { title: 'Conference | Contact Us'});
     }
 });
-router.get('/category1', function(req, res, next){
+router.get('/theme', function(req, res, next){
   if(req.session.authStatus){
     MongoClient.connect(connString, function(err, db){
       if(err) throw err;
@@ -309,37 +321,21 @@ router.get('/category1', function(req, res, next){
       users.find({'_id': req.session.email}).toArray(function(err, result){
         if(err) throw err;
         db.close();
-        res.render('category1', {title: 'Conference | Category1', 'username': req.session.username, 'role':req.session.role, 'authStatus':'loggedIn'});
+        res.render('theme', {title: 'Conference | Theme', 'username': req.session.username, 'role':req.session.role, 'authStatus':'loggedIn'});
       })
     });
   }else{
-    res.render('category1', {title:'Conference | Category1'});
-  }
-});
-
-router.get('/category2', function(req, res, next){
-  if(req.session.authStatus){
-    MongoClient.connect(connString, function(err, db){
-      if(err) throw err;
-      var users = db.collection('users');
-      users.find({'_id': req.session.email}).toArray(function(err, result){
-        if(err) throw err;
-        db.close();
-        res.render('category2', {title: 'Conference | Category2', 'username': req.session.username, 'role': req.session.role, 'authStatus': 'loggedIn'});
-      });
-    });
-  }else{
-    res.render('category2', {title: 'Conference | Category2'});
+    res.render('theme', {title:'Conference | Theme'});
   }
 });
 
 router.get('/schedule', function(req, res, next){
   if(req.session.authStatus){
     MongoClient.connect(connString, function(err, db){
-      if(err) throw err;
+      if(err) next(err);
       var users = db.collection('users');
       users.find({'_id': req.session.email}).toArray(function(err, result){
-        if(err) throw err;
+        if(err) next(err);
         db.close();
         res.render('schedule', {title:'Conference | Schedule', 'username': req.session.username, 'role': req.session.role, 'authStatus': 'loggedIn'});
       });
@@ -352,10 +348,10 @@ router.get('/schedule', function(req, res, next){
 router.get('/sponsors', function(req, res, next){
   if(req.session.authStatus){
     MongoClient.connect(connString, function(err, db){
-      if(err) throw err;
+      if(err) next(err);
       var users = db.collection('users');
       users.find({'_id': req.session.email}).toArray(function(err, result){
-        if(err) throw err;
+        if(err) next(err);
         db.close();
         res.render('sponsors', {title: 'Conference | Sponsors', 'username': req.session.username, 'role': req.session.role, 'authStatus': 'loggedIn'});
       });

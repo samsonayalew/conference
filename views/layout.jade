@@ -20,7 +20,7 @@ html
         li
          a(href='/') Home
         li
-         a(href='category1') Themes
+         a(href='theme') Themes
         li
           a(href='submission_information') Submission
         li
@@ -72,22 +72,22 @@ html
           span(class='caret')
          ul(class='dropdown-menu' id='admin-menu')
           li
-           a(href='/assigntrack') assign track
+           a(href='/assigntrack') Assign track
           li
-           a(href='/new_news') add news
+           a(href='/new_news') Add news
           li
-           a(href='/new_track') new track
+           a(href='/new_track') New track
           li
-           a(href='/userroles') user roles
+           a(href='/userroles') User roles
         - }
         - if(authStatus === 'loggedIn'){
           li
-           a(href='/logout') logout
+           a(href='/logout') Logout
         - } else {
           li
-           a(href='/login') login
+           a(href='/login') Login
           li
-           a(href='/register') register
+           a(href='/register') Register
         - }
     div(class='container row-fluid' style="background:aliceblue;")
      div(class='col-sm-3' style='margin-top:20px;margin-left: -40px;')
@@ -126,7 +126,7 @@ html
          a(href='https://twitter.com/intent/follow?original_referer=http%3A%2F%2Fwww.smuc.edu.et%2F&screen_name=SMUCEthiopia&tw_p=followbutton&variant=2.0' class='twitter' target="_blank")
         a(href='/faq' class='side-a') FAQ
         a(href='http://smuc.edu.et/index.php/research-publication/annual-national-conference-on-pheis' class='side-a' target="_blank" style='font-size: 18px;') Previous Conference
-        a(href="/newses" class="side-a") news
+        a(href="/newses" class="side-a") News
       div.row(style='text-align:center;margin-top:10px;margin-left:40px;')
         h3 Key Speakers
         div(class="row")
