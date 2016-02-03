@@ -56,15 +56,18 @@ $('.assignpaper').change(function(e){
 });
 
 $('#loginsubmit').click(function(e){
+  e.preventDefault();
   var email = $('#email').val();
   var password = $('#password').val();
 
   $.ajax({
     method: "POST",
     url: 'loginpost',
+    async: false,
     data:{"email":email, "password":password},
     success: function(data){
       window.location.href = "/";
+      alert('success');
     }
   });
 });

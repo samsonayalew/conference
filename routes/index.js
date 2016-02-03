@@ -42,7 +42,7 @@ router.post('/loginpost', function(req, res, next){
             req.session.authStatus = 'loggedIn';
             req.session.user = user[0].username;
             req.session.role = user[0].role;
-            res.redirect('/');
+            res.status(200).end();
             // res.render('home', {'title':'SMU Conference', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
           }else{
             // res.status(500).redirect('login', {error:"error"});
