@@ -20,7 +20,8 @@
     "multer":"1.0.1",
     "mailparser":"0.5.2",
     "nodemailer":"1.4.0",
-    "serve-favicon":"2.2.1"
+    "serve-favicon":"2.2.1",
+    "compression": "latest"
   },
   "description": "Conference website for smuc",
   "main": "app.js",
