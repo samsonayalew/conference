@@ -67,7 +67,12 @@ $('#loginsubmit').click(function(e){
     data:{"email":email, "password":password},
     success: function(data){
       window.location.href = "/";
-      alert('success');
+      //alert('success');
+      return true;
+    }, error: function (request, status, error) {
+        // alert("your email or password is incorrect");
+        $('.password').html('<ul class="list-unstyled" style="color:red;"><li>your email or password is invalid</li></ul>')
+        return false;
     }
   });
 });

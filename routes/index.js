@@ -13,6 +13,15 @@ var attachment = multer({dest: 'attachment/'});
 var MongoClient = require('mongodb').MongoClient;
 var connString = 'mongodb://localhost:27017/conference';
 
+
+var transporter = nodemailer.createTransport({
+  host: "213.55.83.211",
+  auth: {
+    user: "conference@smuc.edu.et",
+    pass: "12345aA"
+    }
+  });
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if(req.session.authStatus){
@@ -112,9 +121,14 @@ router.post('/participate', function(req, res, next){
       password:encrypted,
     },function(err, result){
       if(err) next(err);
+      req.session.email = user[0]._id;
+      req.session.authStatus = 'loggedIn';
+      req.session.user = user[0].username;
+      req.session.role = user[0].role;
+
       db.close();
       console.log(result);
-      res.render('home',{title: 'SMU | Register', username: result.username, role:result.role});
+      res.redirect('/');
     });
     });
 });
@@ -133,6 +147,14 @@ router.get('/register', function(req, res, next){
 //post back for register page
 router.post('/register', function(req, res, next){
  //res.render('register', {title : 'Conference/'});
+ var rand=Math.floor((Math.random() * 100) + 54);
+ var host = req.host;
+ var link = "http://" + host + "/verify?id" + rand;
+ mailOptions={
+         to : req.body.email,
+         subject : "Please confirm your Email account",
+         html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+       }
  var cipher = crypto.createCipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
  cipher.update(req.body.password, 'utf8', 'base64');
  var encrypted = cipher.final('base64');
@@ -153,13 +175,60 @@ router.post('/register', function(req, res, next){
     address:req.body.address,
     role:'writer',
     password:encrypted,
+    verified: false,
+    rand: rand
   },function(err, result){
     if(err) next(err);
     db.close();
     console.log(result);
-    res.render('home',{title: 'SMU | Register', username: result.username, role:result.role});
+    smtpTransport.sendMail(mailOptions, function(error, response){
+    if(error){
+       console.log(error);
+       res.end("error");
+     }else{
+       console.log("Message sent: " + response.message);
+       res.render('home',{title: 'SMU | Register', username: result.username, role:result.role});
+    }
+    });
+    });
   });
-  });
+});
+router.get('/verify', function(req, res, next){
+  console.log(req.protocol+":/"+req.get('host'));
+  if((req.protocol+"://" + req.host)===("http://" + req.host))
+  {
+    MongoClient.connect(connString, function(err, db){
+      var users = db.collection('users');
+
+      users.find({'rand':req.query.id}).toArray(function(err, user){
+
+        if(user.length === 0){
+            req.end('<h1>Request is from unknown source</h1>');
+        }else{
+          users.updateOne({'rand':req.query.id}, {'verify':true}, {'upsert':true}, function(err, result){
+            if(err) throw err;
+            db.close();
+            smtpTransport.sendMail(mailOptions, function(error, response){
+              if(error){
+                throw err;
+              }else{
+                console.log("Message sent: " + response.message);
+                mailOptions={
+                        to : req.body.email,
+                        subject : "Your email is confirmed",
+                        html : "Thank you for registering to our website."
+                }
+                req.redirect('/');
+              }
+            });
+          });
+        }
+      });
+    });
+  }
+  else{
+    req.end('<h1>Request is from unknown source</h1>');
+  }
 });
 
 router.get('/email', function(req, res, next){
@@ -192,13 +261,6 @@ router.get('/inbox', function(req, res, next){
 //send email
 router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'subject', maxCount:1},
             {name:'text', maxCount:1}, {name:'file', maxCount:1}]), function(req, res, next){
-  var transporter = nodemailer.createTransport({
-    host: "213.55.83.211",
-    auth: {
-        user: "conference@smuc.edu.et",
-        pass: "12345aA"
-    }
-  });
   //defind a file to attach
     if(req.files){
         var file = {

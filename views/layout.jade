@@ -15,47 +15,34 @@ html
      //p(style="color: aliceblue;font-size: 20px;margin: 0px 0 5px;") 11th conference on Private Higher Education
      //p(style='color:#FFDB00;') 5 - 7 Aug 2015
     div(class='navbar-collapse collapse' style='width:100%;background:#FFFFFF;')
-     table(border='1', align='center')
-       ul(class='nav navbar-nav' style='margin-left:275px;')
-        li
-         a(href='/') Home
-        li
-         a(href='theme') Themes
-        li
-          a(href='submission_information') Submission
-        li
-         a(href='schedule') Schedule
-        li
-         a(href='participate') Participate
-        //li
-         a(href='sponsors') Sponsors
-        //li
-           a(href='general_information') General Information
-        li
-           a(href='travel_information') Travel & Hotel Information
-        li
-          a(href='general_information') Contact Us
-        - if(role === 'writer'){
-        li
-         a(href='/submit') Submit paper
-        li
-         a(href='/inbox') Inbox
-        - } else if(role === 'reviewer'){
-        li
-         a(href='#') assigned papers
-        li(class='dropdown')
-         a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
-          span(class='caret')
-         ul(class='dropdown-menu' id='email-menu')
+     div(style='display: table;margin: 0 auto;')
+         ul(class='nav navbar-nav' style='')
           li
-           a(href='/email') Compose
+           a(href='/') Home
+          li
+           a(href='theme') Themes
+          li
+            a(href='submission_information') Submission
+          li
+           a(href='schedule') Schedule
+          li
+           a(href='participate') Participate
+          //li
+           a(href='sponsors') Sponsors
+          //li
+             a(href='general_information') General Information
+          li
+             a(href='travel_information') Travel & Hotel Information
+          li
+            a(href='general_information') Contact Us
+          - if(role === 'writer'){
+          li
+           a(href='/submit') Submit paper
           li
            a(href='/inbox') Inbox
+          - } else if(role === 'reviewer'){
           li
-           a(href='/sent') Sent
-        - }else if(role === 'coordinator'){
-          li
-           a(href='/downloadpaper') download papers
+           a(href='#') assigned papers
           li(class='dropdown')
            a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
             span(class='caret')
@@ -66,29 +53,42 @@ html
              a(href='/inbox') Inbox
             li
              a(href='/sent') Sent
-        - } else if(role === 'admin'){
-        li(class='dropdown')
-         a(href='#' role='button' class='dorpdown-toogle' data-toggle='dropdown' data-target='#') Administor
-          span(class='caret')
-         ul(class='dropdown-menu' id='admin-menu')
-          li
-           a(href='/assigntrack') Assign track
-          li
-           a(href='/new_news') Add news
-          li
-           a(href='/new_track') New track
-          li
-           a(href='/userroles') User roles
-        - }
-        - if(authStatus === 'loggedIn'){
-          li
-           a(href='/logout') Logout
-        - } else {
-          li
-           a(href='/login') Login
-          li
-           a(href='/register') Register
-        - }
+          - }else if(role === 'coordinator'){
+            li
+             a(href='/downloadpaper') download papers
+            li(class='dropdown')
+             a(href='#' role='button' class='dropdown-toggle' data-toggle='dropdown' data-target='#') email
+              span(class='caret')
+             ul(class='dropdown-menu' id='email-menu')
+              li
+               a(href='/email') Compose
+              li
+               a(href='/inbox') Inbox
+              li
+               a(href='/sent') Sent
+          - } else if(role === 'admin'){
+          li(class='dropdown')
+           a(href='#' role='button' class='dorpdown-toogle' data-toggle='dropdown' data-target='#') Administor
+            span(class='caret')
+           ul(class='dropdown-menu' id='admin-menu')
+            li
+             a(href='/assigntrack') Assign track
+            li
+             a(href='/new_news') Add news
+            li
+             a(href='/new_track') New track
+            li
+             a(href='/userroles') User roles
+          - }
+          - if(authStatus === 'loggedIn'){
+            li
+             a(href='/logout') Logout
+          - } else {
+            li
+             a(href='/login') Login
+            li
+             a(href='/register') Register
+          - }
     div(class='container row-fluid' style="background:aliceblue;")
      div(class='col-sm-3' style='margin-top:20px;margin-left: -40px;')
       div(id='sponsors' class='carousel slide' data-role='carousel' style='margin-left:53px;width:215px;')
