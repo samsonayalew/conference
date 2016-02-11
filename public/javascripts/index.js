@@ -71,7 +71,43 @@ $('#loginsubmit').click(function(e){
       return true;
     }, error: function (request, status, error) {
         // alert("your email or password is incorrect");
-        $('.password').html('<ul class="list-unstyled" style="color:red;"><li>your email or password is invalid</li></ul>')
+        $('.password').html('<ul class="list-unstyled" style="color:red;"><li>your email or password is invalid.</li></ul>')
+        return false;
+    }
+  });
+});
+//registration submit
+$('#registersubmit').validator().click(function(e){
+  e.preventDefault();
+  var option = $('#option').val();
+  var email = $('#email').val();
+  var firstname = $('#firstname').val();
+  var middlename = $('#middlename').val();
+  var lastname = $('#lastname').val();
+  var title = $('#title').val();
+  var phone = $('#phone').val();
+  var organization = $('#organization').val();
+  var position = $('#position').val();
+  var country = $('#country').val();
+  var address = $('#address').val();
+  var password = $('#pass').val();
+
+  $.ajax({
+    method: "POST",
+    url: 'register',
+    async: false,
+    data:{"option": option, "email":email, "firstname":firstname, "middlename":middlename,
+    "lastname":lastname, "title":title, "phone":phone, "organization": organization,
+    "position": position, "country":country, "address":address, "password":password},
+    success: function(data){
+      window.location.href = "/";
+      //alert('success');
+      return true;
+    }, error: function (request, status, error) {
+        // alert("your email or password is incorrect");
+        //$('.email').html('<ul class="list-unstyled" style="color:red;"><li>this email addrss exists.</li></ul>');
+        $('#pass').val('');
+        $('#confpass').val('');
         return false;
     }
   });

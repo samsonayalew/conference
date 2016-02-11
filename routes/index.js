@@ -93,45 +93,6 @@ router.get('/general_information', function(req, res, next){
 router.get('/participate', function(req, res, next){
   res.render('participate', {title:'Conference | Participate'});
 });
-
-router.post('/participate', function(req, res, next){
-
-   //res.render('register', {title : 'Conference/'});
-   var cipher = crypto.createCipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
-   cipher.update(req.body.password, 'utf8', 'base64');
-   var encrypted = cipher.final('base64');
-   MongoClient.connect(connString, function(err, db){
-    if(err) next(err);
-
-    var users = db.collection('users');
-    users.insert({
-      _id:req.body.email,
-      swiftcode:req.body.swiftcode,
-      firstname:req.body.firstname,
-      middlename:req.body.middlename,
-      lastname:req.body.lastname,
-      title:req.body.title,
-      phone:req.body.phone,
-      organization:req.body.organization,
-      position:req.body.position,
-      country:req.body.country,
-      address:req.body.address,
-      verified:false,
-      role:'participant',
-      password:encrypted,
-    },function(err, result){
-      if(err) next(err);
-      req.session.email = user[0]._id;
-      req.session.authStatus = 'loggedIn';
-      req.session.user = user[0].username;
-      req.session.role = user[0].role;
-
-      db.close();
-      console.log(result);
-      res.redirect('/');
-    });
-    });
-});
 //Travel Information display
 router.get('/travel_information', function(req, res, next){
   if(req.session.authStatus){
@@ -144,55 +105,84 @@ router.get('/travel_information', function(req, res, next){
 router.get('/register', function(req, res, next){
   res.render('register', {title : 'Conference | Register' });
 });
-//post back for register page
-router.post('/register', function(req, res, next){
+//email verification
+
+router.get('/emailverify', function(req, res, next){
  //res.render('register', {title : 'Conference/'});
- var rand=Math.floor((Math.random() * 100) + 54);
- var host = req.host;
- var link = "http://" + host + "/verify?id" + rand;
- mailOptions={
-         to : req.body.email,
-         subject : "Please confirm your Email account",
-         html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-       }
- var cipher = crypto.createCipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
- cipher.update(req.body.password, 'utf8', 'base64');
- var encrypted = cipher.final('base64');
  MongoClient.connect(connString, function(err, db){
   if(err) next(err);
-
   var users = db.collection('users');
-  users.insert({
-    _id:req.body.email,
-    firstname:req.body.firstname,
-    middlename:req.body.middlename,
-    lastname:req.body.lastname,
-    title:req.body.title,
-    phone:req.body.phone,
-    organization:req.body.organization,
-    position:req.body.position,
-    country:req.body.country,
-    address:req.body.address,
-    role:'writer',
-    password:encrypted,
-    verified: false,
-    rand: rand
-  },function(err, result){
-    if(err) next(err);
-    db.close();
-    console.log(result);
-    smtpTransport.sendMail(mailOptions, function(error, response){
-    if(error){
-       console.log(error);
-       res.end("error");
-     }else{
-       console.log("Message sent: " + response.message);
-       res.render('home',{title: 'SMU | Register', username: result.username, role:result.role});
-    }
-    });
+
+  users.findOne({_id:req.query.email}, function(err, user){
+      if(err) throw err;
+      if(!user){
+        res.status(200).end();
+      }else{
+        res.writeHead(409, 'The email already exists.')
+        res.end();
+      }
     });
   });
 });
+//post back for register page
+router.post('/register', function(req, res, next){
+ //res.render('register', {title : 'Conference/'});
+ MongoClient.connect(connString, function(err, db){
+  if(err) next(err);
+  var users = db.collection('users');
+
+  users.findOne({_id:req.body.email}, function(err, user){
+      if(err) throw err;
+
+      if(!user){
+        var rand=Math.floor((Math.random() * 100) + 54);
+        var host = req.hostname;
+        var link = "http://" + host + "/verify?id" + rand;
+        mailOptions={
+                to : req.body.email,
+                subject : "Please confirm your Email account",
+                html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+              }
+        var cipher = crypto.createCipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
+        cipher.update(req.body.password, 'utf8', 'base64');
+        var encrypted = cipher.final('base64');
+      //insert the user to the mongo database
+      users.insert({
+        _id:req.body.email,
+        firstname:req.body.firstname,
+        middlename:req.body.middlename,
+        lastname:req.body.lastname,
+        title:req.body.title,
+        phone:req.body.phone,
+        organization:req.body.organization,
+        position:req.body.position,
+        country:req.body.country,
+        address:req.body.address,
+        role:req.body.option,
+        password:encrypted,
+        verified: false,
+        rand: rand
+      },function(err, result){
+        if(err) next(err);
+
+        db.close();
+        console.log(result);
+        transporter.sendMail(mailOptions, function(error, response){
+        if(error){
+           console.log(error);
+           res.end("error");
+         }else{
+           console.log("Message sent: " + response.message);
+           res.render('home',{title: 'SMU | Register', username: result.username, role:result.role});
+        }
+          });//sendMail callback
+        });//insert user
+      }else{
+        res.status(409).end("{'error':'this email addrss exists'}");
+      }
+  });
+  });//MongoClient
+});//register
 router.get('/verify', function(req, res, next){
   console.log(req.protocol+":/"+req.get('host'));
   if((req.protocol+"://" + req.host)===("http://" + req.host))
@@ -208,7 +198,7 @@ router.get('/verify', function(req, res, next){
           users.updateOne({'rand':req.query.id}, {'verify':true}, {'upsert':true}, function(err, result){
             if(err) throw err;
             db.close();
-            smtpTransport.sendMail(mailOptions, function(error, response){
+            transporter.sendMail(mailOptions, function(error, response){
               if(error){
                 throw err;
               }else{
