@@ -35,6 +35,7 @@ app.use(session({
   cookie:{
     // path: '/', // cookie will only be sent to requests under '/api'
     maxAge: 60000, // duration of the cookie in milliseconds, defaults to duration above
+    expires:Date.now() + 3600000
     // ephemeral: false, // when true, cookie expires when the browser closes
     // httpOnly: true,
     // secure: false

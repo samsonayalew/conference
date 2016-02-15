@@ -413,4 +413,20 @@ router.get('/sponsors', function(req, res, next){
     res.render('sponsors', {title: 'Conference | Sponsors'});
   }
 });
+//swift verification for writers and participant
+router.get('/swift', function(req, res, next){
+  if(req.session.role === 'writer' || req.session.role === 'Participant'){
+    MongoClient.connect(connString, function(err, db){
+      if(err) throw err;
+      var users = db.collection('users');
+      users.findOne({'_id':req.session.email}, function(err, result){
+        if(err) throw err;
+        db.close();
+        res.render('writer/swift', {title:'Conference | Verify Swift', 'username': req.session.firstname, 'role':req.session.role, 'authStatus': 'loggedIn'});
+      });
+    });
+  }else{
+    next();
+  }
+});
 module.exports = router;

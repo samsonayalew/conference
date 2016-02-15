@@ -35,9 +35,14 @@ html
             a(href='general_information') Contact Us
           - if(role === 'writer'){
           li
+           a(href='/swift') Swift
+          li
            a(href='/submit') Submit paper
           li
            a(href='/inbox') Inbox
+          - } else if(role === 'Participant'){
+                li
+                 a(href='/swift') Swift
           - } else if(role === 'reviewer'){
           li
            a(href='#') assigned papers
