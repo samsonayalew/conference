@@ -25,7 +25,7 @@ var transporter = nodemailer.createTransport({
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if(req.session.authStatus){
-  res.render('home', { title: 'Conference SMU', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+  res.render('home', { title: 'Conference SMU', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else {
   res.render('home', { title: 'Conference SMU' });
   }});
@@ -49,34 +49,23 @@ router.post('/loginpost', function(req, res, next){
           if(req.body.password === decrypted){
             req.session.email = user[0]._id;
             req.session.authStatus = 'loggedIn';
-            req.session.user = user[0].username;
+            req.session.firstname = user[0].firstname;
             req.session.role = user[0].role;
             res.status(200).end();
-            // res.render('home', {'title':'SMU Conference', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
           }else{
-            // res.status(500).redirect('login', {error:"error"});
             res.status(500).end();
           }
         }else{
-          // res.status(500).render('login', {error:'error'});
           res.status(500).end();
         }
       });
     });
 });
 
-// router.get('/login/:id', function(req, res, next){
-//     if(req.session.authStatus){
-//     res.render('home', { title: 'Conference SMU', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
-//     } else {
-//     res.render('home', { title: 'Conference SMU' });
-//     }
-// });
-
 //Submission Information display
 router.get('/submission_information', function(req, res, next){
   if(req.session.authStatus){
-  res.render('submission_information', {title: 'Conference | Submission Information', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+  res.render('submission_information', {title: 'Conference | Submission Information', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else{
   res.render('submission_information', {title: 'Conference | Submission Information'});
   }
@@ -84,7 +73,7 @@ router.get('/submission_information', function(req, res, next){
 //general infromation display
 router.get('/general_information', function(req, res, next){
   if(req.session.authStatus){
-  res.render('general_information', {title: 'Conference | General Information', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+  res.render('general_information', {title: 'Conference | General Information', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else{
   res.render('general_information', {title: 'Conference | General Information'});
   }
@@ -96,7 +85,7 @@ router.get('/participate', function(req, res, next){
 //Travel Information display
 router.get('/travel_information', function(req, res, next){
   if(req.session.authStatus){
-  res.render('travel_information', {title: 'Conference | Travel Information', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+  res.render('travel_information', {title: 'Conference | Travel Information', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else{
   res.render('travel_information', {title: 'Conference | Travel Information'});
   }
@@ -134,55 +123,61 @@ router.post('/register', function(req, res, next){
   users.findOne({_id:req.body.email}, function(err, user){
       if(err) throw err;
 
-      if(!user){
-        var rand=Math.floor((Math.random() * 100) + 54);
-        var host = req.hostname;
-        var link = "http://" + host + "/verify?id" + rand;
-        mailOptions={
-                to : req.body.email,
-                subject : "Please confirm your Email account",
-                html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-              }
-        var cipher = crypto.createCipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
-        cipher.update(req.body.password, 'utf8', 'base64');
-        var encrypted = cipher.final('base64');
-      //insert the user to the mongo database
-      users.insert({
-        _id:req.body.email,
-        firstname:req.body.firstname,
-        middlename:req.body.middlename,
-        lastname:req.body.lastname,
-        title:req.body.title,
-        phone:req.body.phone,
-        organization:req.body.organization,
-        position:req.body.position,
-        country:req.body.country,
-        address:req.body.address,
-        role:req.body.option,
-        password:encrypted,
-        verified: false,
-        rand: rand
-      },function(err, result){
-        if(err) next(err);
+      var rand=Math.floor((Math.random() * 100) + 54);
+      var host = req.hostname;
+      var link = "http://" + host + "/verify?id=" + rand;
+      mailOptions={
+        from: 'conference@smuc.edu.et', //sender address
+        to : req.body.email,
+        subject : "Please confirm your Email account",
+        html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+        //text: req.body.text, // plaintext body
+      };
 
-        db.close();
-        console.log(result);
+      if(!user){
         transporter.sendMail(mailOptions, function(error, response){
         if(error){
            console.log(error);
-           res.end("error");
+           res.status(554).end();
          }else{
-           console.log("Message sent: " + response.message);
-           res.render('home',{title: 'SMU | Register', username: result.username, role:result.role});
+             var cipher = crypto.createCipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
+             cipher.update(req.body.password, 'utf8', 'base64');
+             var encrypted = cipher.final('base64');
+           //insert the user to the mongo database
+           users.insert({
+             _id:req.body.email,
+             firstname:req.body.firstname,
+             middlename:req.body.middlename,
+             lastname:req.body.lastname,
+             title:req.body.title,
+             phone:req.body.phone,
+             organization:req.body.organization,
+             position:req.body.position,
+             country:req.body.country,
+             address:req.body.address,
+             role:req.body.option,
+             password:encrypted,
+             verified: false,
+             rand: rand.toString()
+           },function(err, result){
+             if(err) next(err);
+             db.close();
+             req.session.email = result.ops[0]._id;
+             req.session.authStatus = 'loggedIn';
+             req.session.firstname = result.ops[0].firstname;
+             req.session.role = result.ops[0].role;
+
+             console.log("Message sent: " + response.message);
+             res.render('home',{title: 'SMU | Register', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+           });//insert user
         }
           });//sendMail callback
-        });//insert user
       }else{
         res.status(409).end("{'error':'this email addrss exists'}");
       }
   });
   });//MongoClient
-});//register
+});//register function
 router.get('/verify', function(req, res, next){
   console.log(req.protocol+":/"+req.get('host'));
   if((req.protocol+"://" + req.host)===("http://" + req.host))
@@ -193,22 +188,28 @@ router.get('/verify', function(req, res, next){
       users.find({'rand':req.query.id}).toArray(function(err, user){
 
         if(user.length === 0){
-            req.end('<h1>Request is from unknown source</h1>');
+            res.end('<h1>Request is from unknown source</h1>');
         }else{
-          users.updateOne({'rand':req.query.id}, {'verify':true}, {'upsert':true}, function(err, result){
+          users.update({'rand':req.query.id}, {$set:{'verified':true}}, {'upsert':true}, function(err, result){
             if(err) throw err;
             db.close();
-            transporter.sendMail(mailOptions, function(error, response){
-              if(error){
+            mailOptions={
+                    from: 'conference@smuc.edu.et', //sender address
+                    to : user[0]._id,
+                    subject : "Your email is confirmed",
+                    html : "Thank you for registering to our website."
+            }
+            transporter.sendMail(mailOptions, function(err, response){
+              if(err){
                 throw err;
               }else{
+
+                req.session.email = user[0]._id;
+                req.session.authStatus = 'loggedIn';
+                req.session.firstname = user[0].firstname;
+                req.session.role = user[0].role;
                 console.log("Message sent: " + response.message);
-                mailOptions={
-                        to : req.body.email,
-                        subject : "Your email is confirmed",
-                        html : "Thank you for registering to our website."
-                }
-                req.redirect('/');
+                res.redirect('/');
               }
             });
           });
@@ -223,9 +224,9 @@ router.get('/verify', function(req, res, next){
 
 router.get('/email', function(req, res, next){
     if(req.session.authStatus && req.session.role === 'coordinator'){
-    res.render('coordinator/email', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    res.render('coordinator/email', { title: 'Conference | email', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else if(req.session.authStatus && req.session.role === 'reviewer'){
-  res.render('reviewer/email', { title: 'Conference | email', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+  res.render('reviewer/email', { title: 'Conference | email', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else {
     res.redirect('404');
   }
@@ -237,11 +238,11 @@ router.get('/inbox', function(req, res, next){
     var users = db.collection('users');
     users.find({_id:req.session.email},{inbox:1}).toArray(function(err, users){
     if(req.session.authStatus && req.session.role === 'coordinator') {
-      res.render('coordinator/inbox', { title: 'Conference | email', 'inbox':users.inbox, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('coordinator/inbox', { title: 'Conference | email', 'inbox':users.inbox, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     }else if(req.session.authStatus && req.session.role === 'writer') {
-      res.render('writer/inbox', { title: 'Conference | email', 'inbox':users.inbox, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('writer/inbox', { title: 'Conference | email', 'inbox':users.inbox, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else if(req.session.authStatus && req.session.role === 'reviewer') {
-      res.render('reviewer/inbox', { title: 'Conference | email', 'inbox':users.inbox, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('reviewer/inbox', { title: 'Conference | email', 'inbox':users.inbox, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else {
       res.redirect('404');
     }
@@ -327,9 +328,9 @@ router.get('/sent', function(req, res, next){
     if(err) throw err;
     db.close();
     if(req.session.authStatus && req.session.role === 'coordinator'){
-      res.render('coordinator/sent', { title: 'Conference | sent','emails': user[0].email, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('coordinator/sent', { title: 'Conference | sent','emails': user[0].email, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else if(req.session.authStatus && req.session.role === 'reviewer'){
-      res.render('reviewer/sent', { title: 'Conference | sent','emails': user[0].email,  'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('reviewer/sent', { title: 'Conference | sent','emails': user[0].email,  'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else {
       res.redirect('404');
     }
@@ -348,9 +349,9 @@ router.get('/logout', function(req, res, next){
 //faq
 router.get('/faq', function(req, res, next){
       if(req.session.authStatus && req.session.role === 'writer'){
-      res.render('faq', { title: 'Conference | FAQ', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('faq', { title: 'Conference | FAQ', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else if(req.session.authStatus && req.session.role === 'reviewer'){
-    res.render('faq', { title: 'Conference | FAQ', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    res.render('faq', { title: 'Conference | FAQ', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else {
       res.render('faq', { title: 'Conference | FAQ'});
     }
@@ -358,9 +359,9 @@ router.get('/faq', function(req, res, next){
 //contact US
 router.get('/contactus', function(req, res, next){
       if(req.session.authStatus && req.session.role === 'writer'){
-      res.render('contactus', { title: 'Conference | Contact Us', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('contactus', { title: 'Conference | Contact Us', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else if(req.session.authStatus && req.session.role === 'reviewer'){
-    res.render('contactus', { title: 'Conference | Contact Us', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    res.render('contactus', { title: 'Conference | Contact Us', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else {
       res.render('contactus', { title: 'Conference | Contact Us'});
     }
@@ -373,7 +374,7 @@ router.get('/theme', function(req, res, next){
       users.find({'_id': req.session.email}).toArray(function(err, result){
         if(err) throw err;
         db.close();
-        res.render('theme', {title: 'Conference | Theme', 'username': req.session.username, 'role':req.session.role, 'authStatus':'loggedIn'});
+        res.render('theme', {title: 'Conference | Theme', 'username': req.session.firstname, 'role':req.session.role, 'authStatus':'loggedIn'});
       })
     });
   }else{
@@ -389,7 +390,7 @@ router.get('/schedule', function(req, res, next){
       users.find({'_id': req.session.email}).toArray(function(err, result){
         if(err) next(err);
         db.close();
-        res.render('schedule', {title:'Conference | Schedule', 'username': req.session.username, 'role': req.session.role, 'authStatus': 'loggedIn'});
+        res.render('schedule', {title:'Conference | Schedule', 'username': req.session.firstname, 'role': req.session.role, 'authStatus': 'loggedIn'});
       });
     });
   }else{
@@ -405,7 +406,7 @@ router.get('/sponsors', function(req, res, next){
       users.find({'_id': req.session.email}).toArray(function(err, result){
         if(err) next(err);
         db.close();
-        res.render('sponsors', {title: 'Conference | Sponsors', 'username': req.session.username, 'role': req.session.role, 'authStatus': 'loggedIn'});
+        res.render('sponsors', {title: 'Conference | Sponsors', 'username': req.session.firstname, 'role': req.session.role, 'authStatus': 'loggedIn'});
       });
     });
   }else{

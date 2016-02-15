@@ -33,7 +33,7 @@ router.get('/downloadpaper', function(req, res, next){
         if(err) throw err;
         if(req.session.authStatus && req.session.role === 'coordinator'){
           db.close();
-          res.render('coordinator/downloadpaper', { title: 'Conference | download paper','track':track[0], 'reviewers':arrReviewer, 'writers': arrWriter,'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+          res.render('coordinator/downloadpaper', { title: 'Conference | download paper','track':track[0], 'reviewers':arrReviewer, 'writers': arrWriter,'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
         } else {
           res.redirect('404');
         }

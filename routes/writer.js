@@ -51,7 +51,7 @@ router.get('/submit', function(req, res, next){
     var track = db.collection('track');
     track.find({}).toArray(function(err, tracks){
       db.close();
-      res.render('writer/submit', {title : 'Conference | Submit','tracks':tracks, 'files':result[0].file, 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('writer/submit', {title : 'Conference | Submit','tracks':tracks, 'files':result[0].file, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     });
   });
  });

@@ -25,7 +25,7 @@ router.get('/assigntrack', function(req, res, next){
         db.close();
         if(req.session.authStatus && req.session.role === 'admin'){
           console.log(util.inspect(users));
-          res.render('admin/assigntrack',{title: 'Conference | Assign Track', 'username':req.session.username,'coordinators':users, 'role':req.session.role, tracks:tracks, 'authStatus':'loggedIn'});
+          res.render('admin/assigntrack',{title: 'Conference | Assign Track', 'username':req.session.firstname,'coordinators':users, 'role':req.session.role, tracks:tracks, 'authStatus':'loggedIn'});
         }else{
           res.redirect('404');
         }
@@ -59,7 +59,7 @@ router.get('/userroles', function(req, res, next){
 
       db.close();
       if(req.session.authStatus && req.session.role === 'admin'){
-        res.render('admin/userroles', {title:'Conference | User Roles', 'username': req.session.username, 'users':users, 'role':req.session.role, 'authStatus': 'loggedIn'});
+        res.render('admin/userroles', {title:'Conference | User Roles', 'username': req.session.firstname, 'users':users, 'role':req.session.role, 'authStatus': 'loggedIn'});
       }else{
         res.redirect('404');
       }
@@ -87,7 +87,7 @@ router.post('/rolechange', function(req, res, next){
 //news about the conference
 router.get('/newses', function(req, res, next){
   if(req.session.authStatus){
-    res.render('newses', {title: 'Conference | news', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    res.render('newses', {title: 'Conference | news', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else{
     res.render('newses', {title: 'Conference | news'});
   }
@@ -95,7 +95,7 @@ router.get('/newses', function(req, res, next){
 
 router.get('/news', function(req, res, next){
   if(req.session.authStatus){
-    res.render('news', {title:'Conference | news', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    res.render('news', {title:'Conference | news', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else{
     res.render('news', {title: 'Conference | news'});
   }
@@ -103,7 +103,7 @@ router.get('/news', function(req, res, next){
 //news upload for an admin side of the website
 router.get('/new_news', function(req, res, next){
   if(req.session.authStatus && req.session.role === 'admin'){
-    res.render('admin/new_news', { title: 'Conference | new news', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+    res.render('admin/new_news', { title: 'Conference | new news', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
   } else {
     res.redirect('404');
   }
@@ -134,7 +134,7 @@ router.post('/news_upload',images.fields([{name:'title', maxCount:1}, {name:'con
 //new track addeing get request
 router.get('/new_track', function(req, res, next){
     if(req.session.authStatus && req.session.role === 'admin'){
-      res.render('admin/new_track', {title:'Conference | new track', 'username': req.session.username, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('admin/new_track', {title:'Conference | new track', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else{
       res.redirect('404');
     }
