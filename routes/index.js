@@ -429,4 +429,25 @@ router.get('/swift', function(req, res, next){
     next();
   }
 });
+router.post('/verifycode', function(req, res, next){
+  if(req.body.swiftcode){
+    MongoClient.connect(connString, function(err, db){
+      if(err) throw err;
+      var users = db.collection('users');
+      users.findOne({'swift.code':req.body.swiftcode}, function(err, result){
+        if(err) throw err;
+        if(!result.swift){
+          users.updateOne({'_id': req.session.email},{'swift':{'code':req.body.swiftcode, 'verified':false}},
+          {'upsert':true}, function(err, result){
+            res.render('writer/swift', {title:'Conference | Verify Swift', 'username': req.session.firstname, 'role':req.session.role, 'authStatus': 'loggedIn', 'swiftcode':swiftcode, 'verified':false});
+          });
+        }else{
+            res.render('writer/swift', {title:'Conference | Verify Swift', 'username': req.session.firstname, 'role':req.session.role, 'authStatus': 'loggedIn', 'swiftcode':result.swift.swiftcode, 'verified':result.swift.verified});
+        }
+      });
+    })
+  }else{
+    next();
+  }
+});
 module.exports = router;

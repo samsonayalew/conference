@@ -113,6 +113,25 @@ $('#registersubmit').validator().click(function(e){
   });
 });
 
+//registration submit
+$('#swiftcode').validator().click(function(e){
+  e.preventDefault();
+  var swiftcode = $('#swift').val();
+  $.ajax({
+    method: "POST",
+    url: 'verifycode',
+    async: false,
+    data:{"swiftcode":swiftcode},
+    success: function(data){
+      //alert('success');
+      return true;
+    }, error: function (request, status, error) {
+        // alert("your email or password is incorrect");
+        //$('.email').html('<ul class="list-unstyled" style="color:red;"><li>this email addrss exists.</li></ul>');
+        return false;
+    }
+  });
+});
 // $('.uploadeddoc').click(function(e){
 //   var uploadeddoc = e.target.id;
 //   $.ajax({

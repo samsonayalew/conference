@@ -4,5 +4,7 @@ block content
   h1(align='center') Swift Code Verification
   p(align='center')
     label(for='swift')
-    input(type='text' name='swift' class='btn' placeholder='swift code here' required)
-    button(class='btn btn-primary') Enter
+    input(type='text' name='swift' id='swift' class='btn' placeholder='swift code here' require)
+    button(class='btn btn-primary' id='swiftcode') Enter
+    -if(swiftcode)
+      span(id='return')= swiftcode
