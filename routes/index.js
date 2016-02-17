@@ -42,7 +42,7 @@ router.post('/loginpost', function(req, res, next){
       users.find({'_id':req.body.email}).toArray(function(err, user){
         if(err) throw err;
         db.close();
-        if(user[0].password && user[0]._id){
+        if(user && user[0].password && user[0]._id){
           var decipher = crypto.createDecipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
           decipher.update(user[0].password, 'base64', 'utf8');
           var decrypted = decipher.final('utf8');
@@ -422,8 +422,12 @@ router.get('/swift', function(req, res, next){
       users.findOne({'_id':req.session.email}, function(err, result){
         if(err) throw err;
         db.close();
-        res.render('writer/swift', {title:'Conference | Verify Swift', 'username': req.session.firstname, 'role':req.session.role, 'authStatus': 'loggedIn'});
-      });
+        if(result.swift){
+          res.render('writer/swift', {title:'Conference | Verify Swift', 'username': req.session.firstname, 'swiftcode': result.swift.swiftcode, 'verified': result.swift.verified, 'role': req.session.role, 'authStatus': 'loggedIn'});
+        }else{
+          res.render('writer/swift', {title:'Conference | Verify Swift', 'username': req.session.firstname,  'role':req.session.role, 'authStatus': 'loggedIn'});
+        }
+    });
     });
   }else{
     next();
@@ -436,10 +440,10 @@ router.post('/verifycode', function(req, res, next){
       var users = db.collection('users');
       users.findOne({'swift.code':req.body.swiftcode}, function(err, result){
         if(err) throw err;
-        if(!result.swift){
-          users.updateOne({'_id': req.session.email},{'swift':{'code':req.body.swiftcode, 'verified':false}},
+        if(!result){
+          users.updateOne({'_id': req.session.email},{"$set":{'swift':{'swiftcode':req.body.swiftcode, 'verified':false}}},
           {'upsert':true}, function(err, result){
-            res.render('writer/swift', {title:'Conference | Verify Swift', 'username': req.session.firstname, 'role':req.session.role, 'authStatus': 'loggedIn', 'swiftcode':swiftcode, 'verified':false});
+            res.render('writer/swift', {title:'Conference | Verify Swift', 'username': req.session.firstname, 'role':req.session.role, 'authStatus': 'loggedIn', 'swiftcode':req.body.swiftcode, 'verified':false});
           });
         }else{
             res.render('writer/swift', {title:'Conference | Verify Swift', 'username': req.session.firstname, 'role':req.session.role, 'authStatus': 'loggedIn', 'swiftcode':result.swift.swiftcode, 'verified':result.swift.verified});

@@ -59,7 +59,11 @@ app.use('/', admin);
 // });
 app.use(function(req, res) {
      //res.send('404: Page not Found', 404);
-     res.render('404error');
+     if(req.session.role){
+        res.render('404error', { title: 'Conference | 404', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+      }else{
+        res.render('404error',{ title: 'Conference | 404'});
+      }
   });
 // error handlers
 

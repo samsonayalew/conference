@@ -67,4 +67,24 @@ router.get('/papers/:file', function(req, res, next){
   });
 });
 
+router.get('/swiftverify', function(req, res, next){
+  MongoClient.connect(connString, function(err, db){
+    if(err) throw err;
+    var users = db.collection('col');
+    users.find({}).toArray(function(err, users){
+      if(users.length > 0){
+        if(req.session.role === 'coordinator'){
+          var users = users.map(function(item, index){
+            if(item.code)
+            return [item._id, item.swift.swiftcode, item.swift.verified];
+          });
+          res.render('coordinator/swiftverify', { title: 'Conference | verify swift code','users':users, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+          }
+      }else{
+        next();
+      }
+    });
+  });
+});
+
 module.exports = router;
