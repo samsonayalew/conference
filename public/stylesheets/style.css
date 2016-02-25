@@ -16,7 +16,7 @@ html, body {
   height: 100%;
 }
 body {
-  margin: 0;
+  margin: -8px;
   padding: 0;
   width: 100%;
   display: table;
@@ -202,4 +202,7 @@ hr{
   padding-bottom: 15px;
   padding-top: 10px;
   width: 100%;
+}
+.swift-user{
+  text-transform: capitalize;
 }

@@ -114,7 +114,7 @@ $('#registersubmit').validator().click(function(e){
 });
 
 //registration submit
-$('#swiftcode').validator().click(function(e){
+$('#swiftcode').click(function(e){
   e.preventDefault();
   var swiftcode = $('#swift').val();
   $.ajax({
@@ -123,6 +123,7 @@ $('#swiftcode').validator().click(function(e){
     async: false,
     data:{"swiftcode":swiftcode},
     success: function(data){
+      window.location.href = "/swift";
       //alert('success');
       return true;
     }, error: function (request, status, error) {
@@ -132,39 +133,47 @@ $('#swiftcode').validator().click(function(e){
     }
   });
 });
-// $('.uploadeddoc').click(function(e){
-//   var uploadeddoc = e.target.id;
-//   $.ajax({
-//     method: "POST",
-//     url: "downloaddoc",
-//     data:{"uploadeddoc": uploadeddoc},
-//     responseType: 'arraybuffer',
-//     success: function(){
-//       //window.open('/download?'+ uploadeddoc);
-//     }
-//   });
-// });
 
-//on submission of paper
-/*
-$('#submitPaper').on('click', function(){
-	var data = new FormData();
-	data.append('file', $('#submitFile')[0].files[0]);
-	data.append('track', $('#submitTrack').val());
-	data.append('submissiontype', $('#submissionType').val());
-	data.append('title', $('#submitTitle').val());
-	data.append('abstract', $('#submitAbstract').val());
-	data.append('keyword', $('#submitKeyword').val());
+$("input[id='verified']").click(function(e){
+  if(this.checked)
+   $('#myModal').modal('show');
+});
 
-	$.ajax({
-		url:'upload',
-		type:'post',
-		contentType: false,
-		processData: false,
-		data:data
-	}).done(function(){
-		alert('alert');
-	});
-});
-*/
-});
+$('#swiftsearch').click(function(e){
+  e.preventDefault();
+  var search = $('#search').val();
+  $.ajax({
+    method: "POST",
+    url: 'verifyswiftcode',
+    async: false,
+    data:{"search":search},
+    success: function(data){
+        var listswift = $('.listswift')[0];
+        listswift.innerHTML = '';
+        if(data.forEach){
+          data.forEach(function(value, index, array){
+            if(value.verified === false){
+              listswift.innerHTML = listswift.innerHTML + '<div style="border:solid #d50000 2px; margin:20px; border-radius:7px;" class="codeitem">' +
+                                    '<p align="center" style="color:#d50000;font-weight:bold;" class="swift-user">' +
+                                    '<span>' + value.firstname + ' (' + value.email + ')</span></p>' +
+                                    '<p align="center" style="color:#d50000;font-weight:bold;" class="swift-user">' + value.swiftcode + '(unverified)</p>' +
+                                    '<p align="center"><input type="checkbox" id="verified" value="true">' +
+                                    '<label for="verified">Verified</label></p></div>';
+
+            }else{
+              listswift.innerHTML = listswift.innerHTML + '<div style="border:solid #37a000 2px; margin:20px; border-radius:7px;" class="codeitem">' +
+                                    '<p align="center" style="color:#37a000;font-weight:bold;" class="swift-user">' +
+                                    '<span>' + value.firstname + ' (' + value.email + ')</span></p>' +
+                                    '<p align="center" style="color:#37a000;font-weight:bold;" class="swift-user">' + value.swiftcode + '(verified)</p>' +
+                                    '<p align="center"></p></div>';
+            }
+          });
+        }
+        return true;
+    }, error: function (request, status, error) {
+        return false;
+    }
+  });
+});//swift search
+
+});//all document

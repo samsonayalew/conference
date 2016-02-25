@@ -31,7 +31,11 @@ router.get('/', function(req, res, next) {
   }});
 //get request for login page
 router.get('/login', function(req, res, next){
+    if(!req.session.authStatus){
       res.render('login', { title: 'Conference | Login' });
+    }else{
+      next();
+    }
 });
 
 //post back for login page

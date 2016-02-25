@@ -70,21 +70,38 @@ router.get('/papers/:file', function(req, res, next){
 router.get('/swiftverify', function(req, res, next){
   MongoClient.connect(connString, function(err, db){
     if(err) throw err;
-    var users = db.collection('col');
+    var users = db.collection('users');
     users.find({}).toArray(function(err, users){
       if(users.length > 0){
         if(req.session.role === 'coordinator'){
           var users = users.map(function(item, index){
-            if(item.code)
-            return [item._id, item.swift.swiftcode, item.swift.verified];
+            if(item.swift)
+            return {'email':item._id, 'firstname':item.firstname, 'middlename':item.middlename, 'swiftcode':item.swift.swiftcode, 'verified':item.swift.verified};
           });
-          res.render('coordinator/swiftverify', { title: 'Conference | verify swift code','users':users, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+          res.render('coordinator/swiftverify', {title: 'Conference | verify swift code','users': users, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
           }
+        }else{
+        next();
+        }
+    });
+  });
+});
+
+router.post('/verifyswiftcode', function(req, res, next){
+  MongoClient.connect(connString, function(err, db){
+    if(err) throw err;
+    var users = db.collection('users');
+    users.find({'swift.swiftcode':new RegExp(req.body.search, 'i')}).toArray(function(err, users){
+      if(users.length > 0){
+        var users = users.map(function(item, index){
+          if(item.swift)
+          return {'email':item._id, 'firstname':item.firstname, 'middlename':item.middlename, 'swiftcode':item.swift.swiftcode, 'verified':item.swift.verified};
+        });
+        res.json(users);
       }else{
         next();
       }
     });
   });
 });
-
 module.exports = router;

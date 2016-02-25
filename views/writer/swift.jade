@@ -9,8 +9,8 @@ block content
       button(class='btn btn-primary' id='swiftcode') Enter
   - if(swiftcode)
       - if(verified === true)
-          p(align='center' style='color:#37a000;font-weight: bold;')
+          p(align='center' style='color: #37a000;font-weight: bold;')
             span(id='return')= swiftcode + ' (verified)'
       - else
-          p(align='center' style='color:red;font-weight: bold;')
+          p(align='center' style='color: red;font-weight: bold;')
             span(id='return')= swiftcode + ' (unverified)'
