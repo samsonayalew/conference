@@ -281,7 +281,7 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
       attachments: [
         {   // file on disk as an attachment
             filename: file.originalname,
-            path: '/attachment/'+ file.filename // stream this file
+            path: 'attachment/'+ file.filename // stream this file
         }]
   };
 
