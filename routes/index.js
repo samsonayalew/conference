@@ -332,9 +332,9 @@ router.get('/sent', function(req, res, next){
     if(err) throw err;
     db.close();
     if(req.session.authStatus && req.session.role === 'coordinator'){
-      res.render('coordinator/sent', { title: 'Conference | sent','emails': user[0].email, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('coordinator/sent', { title: 'Conference | sent','emails': user[0].sent, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else if(req.session.authStatus && req.session.role === 'reviewer'){
-      res.render('reviewer/sent', { title: 'Conference | sent','emails': user[0].email,  'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('reviewer/sent', { title: 'Conference | sent','emails': user[0].sent,  'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else {
       res.redirect('404');
     }
