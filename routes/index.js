@@ -257,7 +257,7 @@ router.get('/inbox', function(req, res, next){
 router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'subject', maxCount:1},
             {name:'text', maxCount:1}, {name:'file', maxCount:1}]), function(req, res, next){
   //defind a file to attach
-    if(req.files){
+    if(req.files.file){
         var file = {
         originalname: req.files.file[0].originalname,
         encoding: req.files.file[0].encoding,
@@ -267,25 +267,32 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
         size: req.files.file[0].size,
         date: new Date()
         };
-  }
+      }
       if(req.session.role === 'coordinator'){
         var from = 'conference@smuc.edu.et';
       } else {
         var from = req.session.email;
       }
-  var mailOptions = {
+      if(req.files.file){
+        var mailOptions = {
+        from: from, //sender address
+        to: req.body.address, // list of receivers
+        subject: req.body.subject, // Subject line
+        text: req.body.text, // plaintext body
+        attachments: [
+          {   // file on disk as an attachment
+              filename: file.originalname,
+              path: 'attachment/'+ file.filename // stream this file
+          }]
+        };
+    }else{
+      var mailOptions = {
       from: from, //sender address
       to: req.body.address, // list of receivers
       subject: req.body.subject, // Subject line
       text: req.body.text, // plaintext body
-      attachments: [
-        {   // file on disk as an attachment
-            filename: file.originalname,
-            path: 'attachment/'+ file.filename // stream this file
-        }]
-  };
-
-  // send mail with defined transport object
+      };
+    }// send mail with defined transport object
   transporter.sendMail(mailOptions, function(error, info){
       if(error){
           return console.log(error);

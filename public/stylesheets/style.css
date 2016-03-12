@@ -84,12 +84,6 @@ body {
     direction: ltr;
     cursor: pointer;
 }
-hr{
-  margin-top: 5px;
-  margin-bottom: 0px;
-  margin-right: 295px;
-  width: 623px;
-}
 .carousel-caption{
   position: static !important;
   padding-bottom: 10px;
@@ -104,45 +98,13 @@ hr{
   font-stretch: condensed;
   font-family: sans-serif;
 }
-@media (max-width: 768px) {
-  #iqpmBrand{
-  float: left;
-  position: static;
-  margin-top: -50px;
-  margin-left: 50px;
-  }
-}
 .side-a{
   margin-top: 7px;
   margin-bottom: 7px;
   display: block;
-  font-family: serif;
-  font-size: 20px;
+  font-family: monospace;
+  font-size: 16;
   text-decoration:none !important;
-}
-.social{
-  margin-top: 10px;
-}
-.facebook{
-    background-image: url(/images/social.png);
-    background-position: 1120px 130px;
-    height: 45px;
-    width: 50px;
-    position: relative;
-    display: inline-block;
-    border-radius: 10px;
-    background-size: 560px 210px;
-    margin-right: 10px;
-}
-.twitter{
-    background-image: url(/images/social.png);
-    background-position: 712px 130px;
-    height: 45px;
-    width: 50px;
-    position: relative;
-    display: inline-block;
-    border-radius: 10px;
-    background-size: 560px 210px;
 }
 /* bootstrap dropdown on hover */
 .sidebar-nav {
@@ -197,7 +159,7 @@ hr{
     margin-top:10px;
 }
 .bgtop{
-  height: 185px;
+  height: 155px;
   background: url(../images/reb_bg.png) repeat-x;
   padding-bottom: 15px;
   padding-top: 10px;
