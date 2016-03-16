@@ -1,4 +1,14 @@
 extends ../layout
 
 block content
-  h1 Sent
+ div(class="row" style="margin-top:20px;")
+  div(class="col-ms-2")
+  div(class="col-lg-10" role="main")
+   - if(email)
+    - each email, index in emails
+      div(class="panel-group")
+       div(class="panel panel-default panel-heading panel-title" data-toggle="collapse" href="#collapse#{index}")= email.subject
+          span(class='caret')
+       div(id="collapse#{index}" class="panel-collapse collapse")
+        div(class="panel-body")= email.to
+        div(class="panel-footer")= email.text
