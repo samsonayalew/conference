@@ -46,22 +46,26 @@ router.post('/loginpost', function(req, res, next){
       users.find({'_id':req.body.email}).toArray(function(err, user){
         if(err) throw err;
         db.close();
-        if(user && user[0].password && user[0]._id){
-          var decipher = crypto.createDecipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
-          decipher.update(user[0].password, 'base64', 'utf8');
-          var decrypted = decipher.final('utf8');
-          if(req.body.password === decrypted){
-            req.session.email = user[0]._id;
-            req.session.authStatus = 'loggedIn';
-            req.session.firstname = user[0].firstname;
-            req.session.role = user[0].role;
-            res.status(200).end();
-          }else{
-            res.status(500).end();
-          }
+        if(user[0]){
+          if(user[0].password && user[0]._id){
+            var decipher = crypto.createDecipher('aes-128-cbc', '3iusVDK7Ypg7nbPQhtB4tNkXqZPjvNjY');
+            decipher.update(user[0].password, 'base64', 'utf8');
+            var decrypted = decipher.final('utf8');
+            if(req.body.password === decrypted){
+              req.session.email = user[0]._id;
+              req.session.authStatus = 'loggedIn';
+              req.session.firstname = user[0].firstname;
+              req.session.role = user[0].role;
+              res.status(200).end();
+            }else{
+              res.status(500).end();
+            }
         }else{
           res.status(500).end();
         }
+      }else{
+          res.status(500).end();
+      }
       });
     });
 });
@@ -339,13 +343,12 @@ router.get('/sent', function(req, res, next){
     if(err) throw err;
     db.close();
     if(req.session.authStatus && req.session.role === 'coordinator'){
-      res.render('coordinator/sent', { title: 'Conference | sent','emails': user[0].email, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('coordinator/sent', { title: 'Conference | sent','emails': user[0].sent, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else if(req.session.authStatus && req.session.role === 'reviewer'){
-      res.render('reviewer/sent', { title: 'Conference | sent','emails': user[0].email,  'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+      res.render('reviewer/sent', { title: 'Conference | sent','emails': user[0].sent,  'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     } else {
       res.redirect('404');
     }
-    console.log(util.inspect(user[0].email));
   })
   })
 });
