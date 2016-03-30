@@ -168,3 +168,6 @@ body {
 .swift-user{
   text-transform: capitalize;
 }
+.read:hover{
+  color:black;
+}

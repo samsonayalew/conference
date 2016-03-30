@@ -258,6 +258,23 @@ router.get('/inbox', function(req, res, next){
   });
   });
 });
+router.post('/emailread', function(req, res, next){
+  MongoClient.connect(connString, function(err, db){
+    if(err) throw err;
+    var users = db.collection('users');
+    if(req.body.date){
+      date = new Date(req.body.date).toISOString();
+      users.findAndModify(
+        {'_id':req.session.email, 'inbox.date': date},
+        {'inbox.read': true},
+        {upsert: true}, function(err, result){
+          db.close();
+          console.log(result);
+          res.redirect('/inbox');
+      });
+    }
+  });
+});
 //send email
 router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'subject', maxCount:1},
             {name:'text', maxCount:1}, {name:'file', maxCount:1}]), function(req, res, next){
@@ -270,7 +287,7 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
         destination: req.files.file[0].destination,
         filename: req.files.file[0].filename,
         size: req.files.file[0].size,
-        date: new Date()
+        date: new Date().toISOString()
         };
       }
       if(req.session.role === 'coordinator'){
@@ -312,7 +329,7 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
           {$push:{sent:{to: req.body.address,
                   subject:req.body.subject,
                   text: req.body.text,
-                  date: new Date()
+                  date: new Date().toISOString()
           }}},
           {upsert: true}, function(err, result){
           if(err) throw err;
@@ -324,7 +341,7 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
                     text: req.body.text,
                     read: false,
                     attachment: file,
-                    date: new Date()
+                    date: new Date().toISOString()
             }}},
             {upsert: true}, function(err, result){
               db.close();

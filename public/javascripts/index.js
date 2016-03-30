@@ -134,6 +134,22 @@ $('#swiftcode').click(function(e){
   });
 });
 
+//inbox email change
+$("tr[name='email']").click(function(e){
+  //remove the classes
+  this.attributes.removeNamedItem('class');
+  //write to database
+  e.preventDefault();
+  var read = true;
+  var date = this.id;
+  $.ajax({
+    method: "POST",
+    url: 'emailread',
+    async: false,
+    data:{"read":read, "date":date}
+  });
+});
+
 $("input[id='verified']").click(function(e){
   if(this.checked)
    $('#myModal').modal('show');
