@@ -239,11 +239,15 @@ router.get('/email', function(req, res, next){
     res.redirect('404');
   }
 });
+
 router.get('/inbox', function(req, res, next){
   MongoClient.connect(connString, function(err, db){
     if(err) next(err);
     var users = db.collection('users');
-    users.find({_id:req.session.email},{inbox:1}).sort({"email.date":1}).toArray(function(err, user){
+    users.aggregate([{'$match':{'_id':'samson.ayalew.et@gmail.com'}},
+    {'$unwind':'$inbox'},
+    {'$sort':{'inbox.date':1}},
+    {'$group':{'_id':'$_id', 'inbox':{'$push': '$inbox'}}}]).toArray(function(err, user){
       if(err) throw err;
       db.close();
       if(req.session.authStatus && req.session.role === 'coordinator') {
@@ -263,10 +267,9 @@ router.post('/emailread', function(req, res, next){
     if(err) throw err;
     var users = db.collection('users');
     if(req.body.date){
-      date = new Date(req.body.date).toISOString();
-      users.findAndModify(
-        {'_id':req.session.email, 'inbox.date': date},
-        {'inbox.read': true},
+      date = new Date(req.body.date).toGMTString();
+      users.update({'_id':req.session.email, 'inbox.date': date},
+        {'$set':{'inbox.$.read': true}},
         {upsert: true}, function(err, result){
           db.close();
           console.log(result);
@@ -287,7 +290,7 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
         destination: req.files.file[0].destination,
         filename: req.files.file[0].filename,
         size: req.files.file[0].size,
-        date: new Date().toISOString()
+        date: new Date().toGMTString()
         };
       }
       if(req.session.role === 'coordinator'){
@@ -329,7 +332,7 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
           {$push:{sent:{to: req.body.address,
                   subject:req.body.subject,
                   text: req.body.text,
-                  date: new Date().toISOString()
+                  date: new Date().toGMTString()
           }}},
           {upsert: true}, function(err, result){
           if(err) throw err;
@@ -341,7 +344,7 @@ router.post('/email', attachment.fields([{name:'address', maxCount:1},{name:'sub
                     text: req.body.text,
                     read: false,
                     attachment: file,
-                    date: new Date().toISOString()
+                    date: new Date().toGMTString()
             }}},
             {upsert: true}, function(err, result){
               db.close();

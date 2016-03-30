@@ -20,10 +20,10 @@ block content
                   .modal-content
                     .modal-header
                       button.close(type='button', data-dismiss='modal') ×
-                      h4.modal-title= email.subject + ' (' + email.date.toDateString() + ')'
+                      h4.modal-title= email.subject + ' (' + new Date(email.date).toDateString() + ')'
                     .modal-body
                       p= email.text
               td= email.to
-              td= email.date.toDateString()
+              td= new Date(email.date).toDateString()
    else
       h1 Sent
