@@ -244,20 +244,24 @@ router.get('/inbox', function(req, res, next){
   MongoClient.connect(connString, function(err, db){
     if(err) next(err);
     var users = db.collection('users');
-    users.aggregate([{'$match':{'_id':'samson.ayalew.et@gmail.com'}},
+    users.aggregate([{'$match':{'_id':req.session.email}},
     {'$unwind':'$inbox'},
     {'$sort':{'inbox.date':1}},
     {'$group':{'_id':'$_id', 'inbox':{'$push': '$inbox'}}}]).toArray(function(err, user){
       if(err) throw err;
       db.close();
-      if(req.session.authStatus && req.session.role === 'coordinator') {
-        res.render('coordinator/inbox', { title: 'Conference | email', 'emails':user[0].inbox, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
-      }else if(req.session.authStatus && req.session.role === 'writer') {
-        res.render('writer/inbox', { title: 'Conference | email', 'emails':user[0].inbox, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
-      } else if(req.session.authStatus && req.session.role === 'reviewer') {
-        res.render('reviewer/inbox', { title: 'Conference | email', 'emails':user[0].inbox, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
-      } else {
-        res.redirect('404');
+      if(user[0]){
+        if(req.session.authStatus && req.session.role === 'coordinator') {
+          res.render('coordinator/inbox', { title: 'Conference | email', 'emails':user[0].inbox, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+        }else if(req.session.authStatus && req.session.role === 'writer') {
+          res.render('writer/inbox', { title: 'Conference | email', 'emails':user[0].inbox, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+        } else if(req.session.authStatus && req.session.role === 'reviewer') {
+          res.render('reviewer/inbox', { title: 'Conference | email', 'emails':user[0].inbox, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+        } else {
+          res.redirect('404');
+        }
+      }else{
+        res.render('reviewer/inbox', { title: 'Conference | email', 'emails':'', 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
       }
   });
   });
@@ -363,12 +367,16 @@ router.get('/sent', function(req, res, next){
     users.find({_id: req.session.email}).sort({"email.date":1}).toArray(function(err, user){
     if(err) throw err;
     db.close();
-    if(req.session.authStatus && req.session.role === 'coordinator'){
-      res.render('coordinator/sent', { title: 'Conference | sent','emails': user[0].sent, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
-    } else if(req.session.authStatus && req.session.role === 'reviewer'){
-      res.render('reviewer/sent', { title: 'Conference | sent','emails': user[0].sent,  'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
-    } else {
-      res.redirect('404');
+    if(user[0]){
+      if(req.session.authStatus && req.session.role === 'coordinator'){
+        res.render('coordinator/sent', { title: 'Conference | sent','emails': user[0].sent, 'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+      } else if(req.session.authStatus && req.session.role === 'reviewer'){
+        res.render('reviewer/sent', { title: 'Conference | sent','emails': user[0].sent,  'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
+      } else {
+        res.redirect('404');
+      }
+    }else{
+      res.render('reviewer/sent', { title: 'Conference | sent','emails': '',  'username': req.session.firstname, 'role': req.session.role, 'authStatus':'loggedIn'});
     }
   })
   })

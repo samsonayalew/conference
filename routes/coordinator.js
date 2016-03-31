@@ -13,6 +13,14 @@ var images = multer({dest: 'news_images/'});
 var MongoClient = require('mongodb').MongoClient;
 var connString = 'mongodb://localhost:27017/conference';
 var router = express.Router();
+
+var transporter = nodemailer.createTransport({
+  host: "213.55.83.211",
+  auth: {
+    user: "conference@smuc.edu.et",
+    pass: "12345aA"
+    }
+});
 /* GET users listing. */
 
 router.get('/downloadpaper', function(req, res, next){
@@ -102,6 +110,24 @@ router.post('/verifyswiftcode', function(req, res, next){
         next();
       }
     });
+  });
+});
+
+router.post('/emailNotification', function(req, res, next){
+  mailOptions={
+    from: 'conference@smuc.edu.et', //sender address
+    to : req.body.email,
+    subject : "Swift Verification",
+    html : "Your swift code is <span style='color'>Verified</span>, Thanks for registering."
+    //text: req.body.text, // plaintext body
+  };
+  transporter.sendMail(mailOptions, function(err, response){
+    if(err){
+      next(err);
+    }else{
+      console.log("Message sent: " + response.message);
+      res.redirect('/swiftverify');
+    }
   });
 });
 module.exports = router;

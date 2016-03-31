@@ -155,6 +155,19 @@ $("input[id='verified']").click(function(e){
    $('#myModal').modal('show');
 });
 
+//modal yes button click
+$('button[id="yesButton"]').click(function(e){
+  $('#myModal').modal('hide');
+  e.preventDefault();
+  var email = this.name;
+  $.ajax({
+    method: "POST",
+    url: 'emailNotification',
+    async: false,
+    data:{"email":email}
+  });
+});
+
 $('#swiftsearch').click(function(e){
   e.preventDefault();
   var search = $('#search').val();
@@ -169,17 +182,43 @@ $('#swiftsearch').click(function(e){
         if(data.forEach){
           data.forEach(function(value, index, array){
             if(value.verified === false){
-              listswift.innerHTML = listswift.innerHTML + '<div style="border:solid #d50000 2px; margin:20px; border-radius:7px;" class="codeitem">' +
-                                    '<p align="center" style="color:#d50000;font-weight:bold;" class="swift-user">' +
-                                    '<span>' + value.firstname + ' (' + value.email + ')</span></p>' +
-                                    '<p align="center" style="color:#d50000;font-weight:bold;" class="swift-user">' + value.swiftcode + '(unverified)</p>' +
-                                    '<p align="center"><input type="checkbox" id="verified" value="true">' +
-                                    '<label for="verified">Verified</label></p></div>';
+              listswift.innerHTML = listswift.innerHTML + '<div style="border:solid #d50000 2px; color:#d50000; margin:20px; border-radius:7px;" class="codeitem">' +
+              '<p align="center" style="font-weight:bold;" class="swift-user"> <span>' + value.firstname +' '+ value.middlename + ' (' + value.email + ')</span>' +
+              '</p><p align="center" style="font-weight:bold;" class="swift-user">' + value.swiftcode + ' (Unverified)</p>' +
+              '<p align="center"><input type="checkbox" id="verified" value="true"/>'+
+              '<label for="verified">Verified</label>' +
+              '</p>'+
+              '<div id="myModal" role="dialog" class="modal fade" style="display: none;">'+
+              '<div class="modal-dialog"><div class="modal-content">'+
+              '<div class="modal-body">'+
+              '<p align="center" style="margin:20px;font-weight:bold;">Send Email to the user about the SWIFT verification.</p>'+
+              '</div>'+
+              '<div class="modal-footer">'+
+              '<button type="button" class="btn btn-success" id="yesButton">Yes</button>'+
+              '<button type="button" data-dismiss="modal" class="btn btn-default" id="noButton">No</button>'+
+              '</div></div></div></div>';
+              $("input[id='verified']").click(function(e){
+                if(this.checked)
+                  $('#myModal').modal('show');
+              });
 
+              //modal yes button click
+              $('button[id="yesButton"]').click(function(e){
+                $('#myModal').modal('hide');
+                e.preventDefault();
+                var email = this.name;
+                $.ajax({
+                  method: "POST",
+                  url: 'emailNotification',
+                  async: false,
+                  data:{"email":email}
+                });
+              });
+              
             }else{
               listswift.innerHTML = listswift.innerHTML + '<div style="border:solid #37a000 2px; margin:20px; border-radius:7px;" class="codeitem">' +
                                     '<p align="center" style="color:#37a000;font-weight:bold;" class="swift-user">' +
-                                    '<span>' + value.firstname + ' (' + value.email + ')</span></p>' +
+                                    '<span>' + value.firstname +' '+ value.middlename + ' (' + value.email + ')</span></p>' +
                                     '<p align="center" style="color:#37a000;font-weight:bold;" class="swift-user">' + value.swiftcode + '(verified)</p>' +
                                     '<p align="center"></p></div>';
             }
