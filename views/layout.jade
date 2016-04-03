@@ -3,9 +3,10 @@ html
   head
     title= title
     link(rel='shortcut icon' type='image/x-icon' href='images/favicon.ico')
+    link(href='https://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css')
     link(href='stylesheets/bootstrap.min.css' rel='stylesheet' type='text/css')
     link(href='stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css')
-    link(href='stylesheets/style.css' rel='stylesheet' type='text/css')
+    link(href='stylesheets/style.min.css' rel='stylesheet' type='text/css')
   body
    div(style="padding-right:0px;padding-left:0px;margin-bottom:20px;")
     div(class='carousel-caption bgtop')
@@ -14,7 +15,7 @@ html
      //p(style="color: aliceblue;font-size: 20px;margin: 0px 0 5px;") 11th conference on Private Higher Education
      //p(style='color:#FFDB00;') 5 - 7 Aug 2015
     div(class='navbar-collapse collapse' style='width:100%;background:#FFFFFF;')
-     div(style='display: table;margin: 0 auto;')
+     div(style='display: table;margin: 0 auto; font-size:16px;')
          ul(class='nav navbar-nav' style='')
           li
            a(href='/') Home
@@ -95,8 +96,8 @@ html
           - }
     div(class='container row-fluid' style="background:aliceblue;")
      div(class='col-sm-3' style='margin-top:20px;margin-left: -40px;')
-      div(id='corganizers' class='carousel slide well' data-role='carousel' style='padding:0px;margin-left:53px;width:215px;')
-        div(class='carousel-inner' style="height:200px;background:white;")
+      div(id='corganizers' class='carousel slide' data-role='carousel' style='padding:0px;margin-left:53px;')
+        div(class='carousel-inner' style="background:white;")
          div(class='item active')
           a(href='http://www.aau.org' target='_blank')
            img(src='images/aau_logo.png' class="sponsorimg" alt='First slide')
@@ -110,8 +111,8 @@ html
          span(class='glyphicon glyphicon-chevron-left' style="border-radius: 6px;")
         a(class='right carousel-control' href='#corganizers' role='button' data-slide='next')
          span(class='glyphicon glyphicon-chevron-right' style="border-radius: 6px;")
-      div(id='sponsors' class='carousel slide well' data-role='carousel' style='padding:0px;margin-top:20px;margin-left:53px;width:215px;')
-        div(class='carousel-inner' style="height:200px;background:white;")
+      div(id='sponsors' class='carousel slide' data-role='carousel' style='padding:0px;margin-top:20px;margin-left:53px;')
+        div(class='carousel-inner' style="background:white;")
          div(class='item')
           a(href='http://www.aau.org' target='_blank')
            img(src='images/aau_logo.png' class="sponsorimg" alt='First slide')
@@ -170,7 +171,7 @@ html
                span(style='color:blue;')  Conference@smuc.edu.et
         p.copyright.text-muted(align='center') Copyright © SMU Conference 2016
 
-   script(type='text/javascript' src='javascripts/jquery.min.js')
-   script(type='text/javascript' src='javascripts/bootstrap.min.js')
-   script(type='text/javascript' src='javascripts/validator.min.js')
-   script(type='text/javascript' src='javascripts/index.js')
+   //script(type='text/javascript' src='javascripts/jquery.min.js')
+   //script(type='text/javascript' src='javascripts/bootstrap.min.js')
+   //script(type='text/javascript' src='javascripts/validator.min.js')
+   script(type='text/javascript' src='javascripts/index.min.js')
